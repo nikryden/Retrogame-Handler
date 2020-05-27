@@ -3,7 +3,7 @@
 ![](http://timeonline.se/RGHandler/images/TimeOnlineLogoV3.png)
 
 Retrogame Handler!
-Easy to use handler for Retro handheld consoles.
+Easy to use handler for Retro handheld consoles with built in FTP.
 ## Warning! This is a Alpha build and it is used at your own risk.
 
 [Backup Existing Firmware](http://wagnerstechtalk.com/rg350tips/#Backup_Existing_Firmware)
