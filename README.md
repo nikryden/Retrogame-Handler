@@ -22,12 +22,10 @@ Easy to use handler for Retro handheld consoles.
 - [ ] More functions in the FTP File manager(move files on the console, download files to PC and drag and drop files. ) 
 - [ ] Help to find and install application
 - [ ] Help to find and install games
-- [ ] Move project to GitHub
 - [ ] Backup of the main sd card
 - [ ] Support for password
 - [ ] More resource links
 - [ ] Improved user experience
-- [ ] Please come with suggestions to retrogamehandler@timeonline.se
  
  ### Screenshots. 
 
