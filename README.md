@@ -4,8 +4,12 @@
 
 Retrogame Handler!
 Easy to use handler for Retro handheld consoles.
-## Warning! This is a Alpha build and it is used at your own risk. 
+## Warning! This is a Alpha build and it is used at your own risk.
+
+[Backup Existing Firmware](http://wagnerstechtalk.com/rg350tips/#Backup_Existing_Firmware)
+
 [v0.0.7452.36755 Alfa version](https://github.com/nikryden/Retrogame-Handler/releases)
+
  ### Features in v0.0.7452.36755 Alfa version
 
 - [x] Info about battery status
