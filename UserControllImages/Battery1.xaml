@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="RetroGameHandler.UserControllImages.Battery1"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:RetroGameHandler.UserControllImages"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Stretch="Uniform">
+    <Canvas Name="Capa_1" Canvas.Left="0" Canvas.Top="0" Width="60" Height="60">
+        <Canvas.RenderTransform>
+            <TranslateTransform X="0" Y="0" />
+        </Canvas.RenderTransform>
+        <Canvas.Resources />
+        <!--Unknown tag: metadata-->
+        <!--Unknown tag: sodipodi:namedview-->
+        <Canvas Name="g40">
+            <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path2" Fill="#FFFFFF">
+                <Path.Data>
+                    <PathGeometry Figures="M42.536 4H36V0H24v4h-6.536C15.554 4 14 5.554 14 7.464v49.072C14 58.446 15.554 60 17.464 60h25.071   C44.446 60 46 58.446 46 56.536V7.464C46 5.554 44.446 4 42.536 4z M26 2h8v2h-8V2z M17.464 6H24h12h6.536   C43.343 6 44 6.656 44 7.464V45H16V7.464C16 6.656 16.657 6 17.464 6z M44 54v2.536C44 57.344 43.343 58 42.536 58H40h-6h-6h-6   h-4.536c-0.303 0-0.585-0.093-0.819-0.251C16.858 57.565 17 57.303 17 57c0-0.552-0.448-1-1-1v-4c0.552 0 1-0.448 1-1s-0.448-1-1-1   v-3h3h6h6h6h6h1v1V54z" FillRule="NonZero" />
+                </Path.Data>
+            </Path>
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="18" Canvas.Top="47" Width="2" Height="2" Name="circle4" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="21" Canvas.Top="50" Width="2" Height="2" Name="circle6" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="24" Canvas.Top="47" Width="2" Height="2" Name="circle8" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="30" Canvas.Top="47" Width="2" Height="2" Name="circle10" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="27" Canvas.Top="50" Width="2" Height="2" Name="circle12" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="33" Canvas.Top="50" Width="2" Height="2" Name="circle14" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="36" Canvas.Top="47" Width="2" Height="2" Name="circle16" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="42" Canvas.Top="47" Width="2" Height="2" Name="circle18" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="39" Canvas.Top="50" Width="2" Height="2" Name="circle20" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="18" Canvas.Top="53" Width="2" Height="2" Name="circle22" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="21" Canvas.Top="56" Width="2" Height="2" Name="circle24" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="24" Canvas.Top="53" Width="2" Height="2" Name="circle26" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="30" Canvas.Top="53" Width="2" Height="2" Name="circle28" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="27" Canvas.Top="56" Width="2" Height="2" Name="circle30" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="33" Canvas.Top="56" Width="2" Height="2" Name="circle32" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="36" Canvas.Top="53" Width="2" Height="2" Name="circle34" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="42" Canvas.Top="53" Width="2" Height="2" Name="circle36" Fill="#FFFFFF" />
+            <Ellipse xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="39" Canvas.Top="56" Width="2" Height="2" Name="circle38" Fill="#FFFFFF" />
+        </Canvas>
+        <Canvas Name="g42" />
+        <Canvas Name="g44" />
+        <Canvas Name="g46" />
+        <Canvas Name="g48" />
+        <Canvas Name="g50" />
+        <Canvas Name="g52" />
+        <Canvas Name="g54" />
+        <Canvas Name="g56" />
+        <Canvas Name="g58" />
+        <Canvas Name="g60" />
+        <Canvas Name="g62" />
+        <Canvas Name="g64" />
+        <Canvas Name="g66" />
+        <Canvas Name="g68" />
+        <Canvas Name="g70" />
+    </Canvas>
+    </Viewbox>
+</UserControl>

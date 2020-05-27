@@ -1,0 +1,114 @@
+﻿<Window x:Class="RetroGameHandler.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RetroGameHandler"
+         xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:h="clr-namespace:RetroGameHandler.Handlers"
+        mc:Ignorable="d"
+        Title="{Binding Page.Title}" Height="588.366" Width="1011.911"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        BorderThickness="1"
+        BorderBrush="Gray"
+        Foreground="white">
+    <Window.Resources>
+        <SolidColorBrush x:Key="ImageBrush"  Color="LightBlue" />
+    </Window.Resources>
+    <Grid Background="#2D2D30">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="0" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="24" />
+            </Grid.RowDefinitions>
+            <Border BorderThickness="0,0,1,0">
+                <Grid x:Name="Title">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="32" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="50" />
+                    </Grid.ColumnDefinitions> 
+                    <Image Grid.Column="0" Source="Images/TimeOnlineLogo.ico" Margin="5,10,0,10"  PreviewMouseDown ="Title_MouseDown" />
+                    <Menu Grid.Column="1" Margin="2,0,0,0" Background="Coral" Height="18" >
+
+                        <MenuItem Margin="5,0" Header="File" Template="{DynamicResource MenuItemControlTemplate1}">
+                            <!--<MenuItem Header="Import settings" Click="MenuItem_Click"></MenuItem>
+                    <MenuItem Header="Settings" ></MenuItem>-->
+                            <MenuItem x:Name="mbtnMenueExit" Header="Exit"
+                              Click="mbtnMenueExit_Click"
+                              Template="{DynamicResource MenuItemControlTemplate1}"
+                              Padding="10,2,10,0">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="SignOut" Foreground="White" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuItem>
+                        <MenuItem Margin="5,0" Header="Pages" Template="{DynamicResource MenuItemControlTemplate1}">
+
+                            <MenuItem x:Name="Resorces"
+                                  Header="Resorces"
+                                  Template="{DynamicResource MenuItemControlTemplate1}"
+                                  Click="Resorces_Click"
+                                  Padding="10,2,10,0">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="Resistance"  Foreground="White" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem x:Name="Explorer"
+                                  Header="Console explorer"
+                                  Template="{DynamicResource MenuItemControlTemplate1}"
+                                  Click="StartPage_Click"
+                                  Padding="10,2,10,0">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="Gamepad"  Foreground="White" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                            <MenuItem x:Name="OtionsMenu"
+                                      Header="Options"
+                                      Template="{DynamicResource MenuItemControlTemplate1}"
+                                      Click="OtionsMenu_Click"
+                                      Padding="10,2,10,0">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="Cog"  Foreground="White" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuItem>
+
+                        <MenuItem x:Name="HelpPage" Margin="5,0" Header="Help" Template="{DynamicResource MenuItemControlTemplate1}">
+                            <MenuItem x:Name="AboutPage" Margin="5,0" Header="About" Template="{DynamicResource MenuItemControlTemplate1}" />
+                        </MenuItem>
+                    </Menu>
+                    <!--<TextBlock Grid.Column="1" Text="Retro Console Handler Alfa" VerticalAlignment="Center" Margin="5,0,0,0" FontFamily="verdana" FontSize="12" />-->
+                    <Grid  Grid.Column="2" PreviewMouseDown ="Title_MouseDown"  Background="#2D2D30">
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" Grid.Column="3">
+                        <fa:FontAwesome x:Name="ToTray" Icon="Minus" VerticalAlignment="Center" FontSize="12" Cursor="Hand" MouseLeftButtonDown="ToTray_MouseLeftButtonDown" FontWeight="Light" />
+                        <fa:FontAwesome x:Name="Close" Icon="Close" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12"  Cursor="Hand" MouseLeftButtonDown="Close_MouseLeftButtonDown"  FontWeight="Light" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <ContentControl Grid.Row="2" x:Name="ContentControl" Content="{Binding Page}" />
+            <Grid  Grid.Row="3" Margin="0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="Console" Orientation="Horizontal" Margin="15,0">
+                    <TextBlock FontFamily="Verdana" FontSize="18"  FontWeight="Bold" Text="RetroGame Handler" Margin="0,0,10,0" />
+                    <TextBlock Text="version:" VerticalAlignment="Bottom" />
+                    <TextBlock x:Name="VersionText" VerticalAlignment="Bottom"  />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

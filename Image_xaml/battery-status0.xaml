@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This file is NOT compatible with Silverlight-->
+<Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Stretch="Uniform">
+  <Canvas Name="Capa_1" Canvas.Left="0" Canvas.Top="0" Width="60" Height="60">
+    <Canvas.RenderTransform>
+      <TranslateTransform X="0" Y="0" />
+    </Canvas.RenderTransform>
+    <Canvas.Resources />
+    <!--Unknown tag: metadata-->
+    <!--Unknown tag: sodipodi:namedview-->
+    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path2" Fill="#FFFFFF">
+      <Path.Data>
+        <PathGeometry Figures="M42.536 4H36V0H24v4h-6.536C15.554 4 14 5.554 14 7.464v49.072C14 58.446 15.554 60 17.464 60h25.072  C44.446 60 46 58.446 46 56.536V7.464C46 5.554 44.446 4 42.536 4z M26 2h8v2h-8V2z M44 56.536C44 57.344 43.344 58 42.536 58  H17.464C16.656 58 16 57.344 16 56.536V7.464C16 6.656 16.656 6 17.464 6H24h12h6.536C43.344 6 44 6.656 44 7.464V56.536z" FillRule="NonZero" />
+      </Path.Data>
+    </Path>
+    <Canvas Name="g4" />
+    <Canvas Name="g6" />
+    <Canvas Name="g8" />
+    <Canvas Name="g10" />
+    <Canvas Name="g12" />
+    <Canvas Name="g14" />
+    <Canvas Name="g16" />
+    <Canvas Name="g18" />
+    <Canvas Name="g20" />
+    <Canvas Name="g22" />
+    <Canvas Name="g24" />
+    <Canvas Name="g26" />
+    <Canvas Name="g28" />
+    <Canvas Name="g30" />
+    <Canvas Name="g32" />
+  </Canvas>
+</Viewbox>
