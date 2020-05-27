@@ -12,7 +12,7 @@ Easy to use handler for Retro handheld consoles.
 - [x] Activity icon with battery status
 - [x] Shows info about firmware installed
 - [x] FTP File manager(this version support file-tree view, preview of imagefiles, multi upload files to console and delete files on console)
-- [x] Can connet via WiFi or direct to console via USB
+- [x] Can connect via WiFi or direct to console via USB
 - [x] Can have multiple Ftp Settings
 - [x] Links to usefull pages
 
