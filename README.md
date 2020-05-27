@@ -33,4 +33,4 @@ Easy to use handler for Retro handheld consoles.
  
  ### Screenshots. 
 
-![](http://timeonline.se/RGHandler/images/ConsoleExplorer.png)
+![](http://timeonline.se/RGHandler/images/FTPExplorer.png)
