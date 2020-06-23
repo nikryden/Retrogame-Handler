@@ -12,7 +12,7 @@
         Closing="Window_Closing"
         WindowStyle="None"
         AllowsTransparency="True"
-        Background="Transparent"
+        Background="#2D2D30"
         BorderThickness="1"
         BorderBrush="Gray"
         Foreground="white">
@@ -23,6 +23,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
+                <RowDefinition Height="24" />
                 <RowDefinition Height="0" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="24" />
@@ -34,9 +35,9 @@
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="50" />
-                    </Grid.ColumnDefinitions> 
+                    </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="Images/TimeOnlineLogo.ico" Margin="5,10,0,10"  PreviewMouseDown ="Title_MouseDown" />
-                    <Menu Grid.Column="1" Margin="2,0,0,0" Background="Coral" Height="18" >
+                    <Menu Grid.Column="1" Margin="2,0,0,0" Background="Coral" Height="18">
 
                         <MenuItem Margin="5,0" Header="File" Template="{DynamicResource MenuItemControlTemplate1}">
                             <!--<MenuItem Header="Import settings" Click="MenuItem_Click"></MenuItem>
@@ -85,6 +86,14 @@
                         <MenuItem x:Name="HelpPage" Margin="5,0" Header="Help" Template="{DynamicResource MenuItemControlTemplate1}">
                             <MenuItem x:Name="AboutPage" Margin="5,0" Header="About" Template="{DynamicResource MenuItemControlTemplate1}" />
                         </MenuItem>
+                        <MenuItem Margin="5,0" Header=""
+                                  Template="{DynamicResource MenuItemControlTemplate1}"
+                                  x:Name="miHome"
+                                  Click="miHome_Click">
+                            <MenuItem.Icon>
+                                <fa:ImageAwesome Icon="Home" Foreground="Black" Width="12" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </Menu>
                     <!--<TextBlock Grid.Column="1" Text="Retro Console Handler Alfa" VerticalAlignment="Center" Margin="5,0,0,0" FontFamily="verdana" FontSize="12" />-->
                     <Grid  Grid.Column="2" PreviewMouseDown ="Title_MouseDown"  Background="#2D2D30">
@@ -95,9 +104,79 @@
                     </StackPanel>
                 </Grid>
             </Border>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="15,0,0,0">
+                <Button x:Name="btnPreviousPage" Click="btnPreviousPage_Click" Background="Transparent" BorderThickness="0" IsEnabled="{Binding IsNotFirst}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Grid x:Name="grid">
+                                            <Border x:Name="border" Background="Coral"  CornerRadius="10" BorderBrush="Black" BorderThickness="2">
 
-            <ContentControl Grid.Row="2" x:Name="ContentControl" Content="{Binding Page}" />
-            <Grid  Grid.Row="3" Margin="0,2">
+                                                <ContentPresenter x:Name="content" HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          TextElement.FontWeight="Bold"
+
+                                                  Margin="0">
+                                                </ContentPresenter>
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="Coral" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="True">
+                                                <Setter Property="Cursor" TargetName="grid" Value="Hand" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Background" TargetName="border" Value="Gray" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                    <fa:ImageAwesome Icon="ArrowCircleLeft" Foreground="white" />
+                </Button>
+                <Button x:Name="btnNextPage" Click="btnNextPage_Click" Background="Transparent" BorderThickness="0" Margin="5,0,0,0" IsEnabled="{Binding IsNotLast}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Grid x:Name="grid">
+                                            <Border x:Name="border" Background="Coral"  CornerRadius="10" BorderBrush="Black" BorderThickness="2">
+
+                                                <ContentPresenter x:Name="content" HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          TextElement.FontWeight="Bold"
+                                                  Margin="0">
+                                                </ContentPresenter>
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="Coral" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="True">
+                                                <Setter Property="Cursor" TargetName="grid" Value="Hand" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Background" TargetName="border" Value="Gray" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                    <fa:ImageAwesome Icon="ArrowCircleRight" Foreground="white" />
+                </Button>
+            </StackPanel>
+            <ContentControl Grid.Row="3" x:Name="ContentControl" Content="{Binding Page}" />
+            <Grid  Grid.Row="4" Margin="0,2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="2*" />
@@ -106,7 +185,7 @@
                 <StackPanel x:Name="Console" Orientation="Horizontal" Margin="15,0">
                     <TextBlock FontFamily="Verdana" FontSize="18"  FontWeight="Bold" Text="RetroGame Handler" Margin="0,0,10,0" />
                     <TextBlock Text="version:" VerticalAlignment="Bottom" />
-                    <TextBlock x:Name="VersionText" VerticalAlignment="Bottom"  />
+                    <TextBlock x:Name="VersionText" VerticalAlignment="Bottom" />
                 </StackPanel>
             </Grid>
         </Grid>

@@ -17,14 +17,20 @@ namespace RetroGameHandler
         {
             InitializeComponent();
             ControllImages.Init();
+            LiteDBHelper.init();
+            TheGamesDbHandler.init();
             VersionText.Text = Assembly.GetEntryAssembly().GetName().Version.ToString() + "_Alpha";
             RGHSettings.init();
+            PageHandler.AddPage(new firstPage());
             PageHandler.AddPage(new RetroResorcesView());
             PageHandler.AddPage(new StartView());
             PageHandler.AddPage(new FtpSettingsView());
             PageHandler.AddPage(new OptionsView());
-           
+            PageHandler.AddPage(new ScrapFolderView());
+
             this.DataContext = PageHandler.Instance;
+            PageHandler.SelectedPage<firstPage>();
+
             ConsoleIconHelper.Init();
             ConsoleIconHelper.Close += (s, e) =>
             {
@@ -95,6 +101,21 @@ namespace RetroGameHandler
         private void Resorces_Click(object sender, RoutedEventArgs e)
         {
             PageHandler.SelectedPage<RetroResorcesView>();
+        }
+
+        private void miHome_Click(object sender, RoutedEventArgs e)
+        {
+            PageHandler.SelectedPage<firstPage>();
+        }
+
+        private void btnPreviousPage_Click(object sender, RoutedEventArgs e)
+        {
+            PageHandler.Instance.PreviousPage();
+        }
+
+        private void btnNextPage_Click(object sender, RoutedEventArgs e)
+        {
+            PageHandler.Instance.NextPage();
         }
     }
 }

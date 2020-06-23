@@ -163,6 +163,54 @@ namespace RetroGameHandler.Handlers
             return xpath;
         }
 
+        public void DownloadStream(string path, Stream outStream)
+        {
+            try
+            {
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    clientConnect2.Connect();
+                    var cl = clientConnect2.Download(outStream, path);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        public async Task<bool> UploadStreamAsync(Stream data, string filePathName)
+        {
+            try
+            {
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    clientConnect2.Connect();
+                    Progress<FtpProgress> progress = new Progress<FtpProgress>((p) =>
+                    {
+                        TransMessage = $"Upload to {p.RemotePath}";
+                        Progress = p.Progress;
+                        FileCount = p.FileCount;
+                        FileIndex = p.FileIndex;
+                        TransferSpeed = p.TransferSpeed;
+                        //EAT = p.ETA.ToString("hh:mm");
+                        TransferredBytes = p.TransferredBytes;
+                    });
+                    var status = await clientConnect2.UploadAsync(data, filePathName, FtpRemoteExists.Overwrite, true, progress);
+                    return status.IsSuccess();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
         public void UploadFile(string[] localPath, string remotePath)
         {
             try
@@ -217,6 +265,24 @@ namespace RetroGameHandler.Handlers
             }
         }
 
+        public async Task<bool> FieExist(string Filepath)
+        {
+            try
+            {
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    await clientConnect2.AutoConnectAsync();
+                    return await clientConnect2.FileExistsAsync(Filepath);
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public async Task DeletedFileAsync(string remotePath, CancellationToken cancellationToken)
         {
             try
@@ -247,7 +313,6 @@ namespace RetroGameHandler.Handlers
             {
                 try
                 {
-
                     var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
                     using (var clientConnect2 = new FtpClient())
                     {

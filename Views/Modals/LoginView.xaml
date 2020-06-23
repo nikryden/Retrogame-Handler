@@ -1,0 +1,102 @@
+﻿<Window x:Class="RetroGameHandler.Views.Modals.LoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RetroGameHandler.Views.Modals"
+        mc:Ignorable="d"
+        Background="#2D2D30"
+        Title="Login" Height="283.627" Width="506.866" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="35" />
+        </Grid.RowDefinitions>
+        <TabControl Background="Coral">
+            <TabItem Header="Login">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="70" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="E-mail" VerticalAlignment="Center" />
+                    <TextBox x:Name="email" Grid.Row="1" Grid.Column="2" Height="18" HorizontalAlignment="Left" Width="280" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Password" VerticalAlignment="Center" />
+
+                    <StackPanel Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5">
+                        <PasswordBox x:Name="password" Grid.Row="2" Grid.Column="2"  Height="18" HorizontalAlignment="Left" Width="280" />
+                        <Button x:Name="Login" Content="Login" Padding="10,0" Click="Login_Click" Margin="5,0" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Register/New password">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="70" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="10" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="E-mail" VerticalAlignment="Center" />
+                    <TextBox x:Name="email2" Grid.Row="1" Grid.Column="2" Height="18" HorizontalAlignment="Left" Width="280" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Password" VerticalAlignment="Center" />
+
+                    <StackPanel Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal"  Margin="0,5">
+                        <PasswordBox x:Name="password2" Grid.Row="2" Grid.Column="2"  Height="18"  Width="280"   Margin="0,0,5,0" KeyUp="password2_KeyUp" />
+                    </StackPanel>
+
+                    <TextBlock Text="Strength" Grid.Row="3" Grid.Column="1" FontSize="8" />
+                    <StackPanel Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal">
+                        <Border x:Name="b1" Width="50" Background="Transparent" BorderBrush="Gray" BorderThickness="2" />
+                        <Border x:Name="b2" Width="50" Background="Transparent" BorderBrush="Gray" BorderThickness="2" />
+                        <Border x:Name="b3" Width="50" Background="Transparent" BorderBrush="Gray" BorderThickness="2" />
+                        <Border x:Name="b4" Width="50" Background="Transparent"  BorderBrush="Gray" BorderThickness="2" />
+                        <Border x:Name="b5" Width="50" Background="Transparent"  BorderBrush="Gray" BorderThickness="2" />
+                        <TextBlock x:Name="tstatus"  Text="" Margin="5,0" FontSize="8" />
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="4" Grid.Column="1" Text="Retype password" VerticalAlignment="Center" />
+
+                    <StackPanel Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal"  Margin="0,5">
+                        <PasswordBox x:Name="passwordRetype" Grid.Row="2" Grid.Column="2"  Height="18"  Width="280"   Margin="0,0,5,0" KeyUp="password2_KeyUp" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right"  Margin="0,5">
+                        <Button x:Name="Register" Content="Register account" Padding="10,0"  Click="Register_Click" IsEnabled="False" />
+                        <Button x:Name="ChangePassword" Content="Change password" Padding="10,0"  Click="ChangePassword_Click" IsEnabled="False"  Margin="10,0" Height="21" VerticalAlignment="Top" />
+                    </StackPanel>
+                    <TextBlock Grid.Row="6" Grid.Column="1" Text="Activations code"  VerticalAlignment="Center" />
+                    <StackPanel  Orientation="Horizontal" Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="3">
+                        <TextBox x:Name="acctivationCode"  Height="18" HorizontalAlignment="Left" Width="60" />
+                        <Button x:Name="btnActivation" Click="btnActivation_Click" Content="Activate" Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2" Margin="2,5,5,5" HorizontalAlignment="Right"  Padding="4,0" FontSize="12" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <Border x:Name="brdInfo"  Grid.Column="2" Grid.Row="4" Background="White" CornerRadius="2" Visibility="Visible">
+            <TextBlock x:Name="txInfo"  Text="" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        </Border>
+        <!---->
+        <!--<Border  Grid.Row="6" Grid.ColumnSpan="4" Background="Coral"  CornerRadius="2" Margin="5,0" />
+       -->
+
+        <Button Grid.Column="2" Grid.Row="7" Grid.ColumnSpan="2" x:Name="cancel" Content="Cancel" Margin="20,0"  Padding="10,0" Click="cancel_Click" HorizontalAlignment="Right" Height="20" />
+    </Grid>
+</Window>

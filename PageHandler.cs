@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 
 namespace RetroGameHandler.Views
 {
@@ -63,11 +64,16 @@ namespace RetroGameHandler.Views
 
         public class Pager : INotifyPropertyChanged
         {
+            public Pager()
+            {
+            }
+
             private IPage _selectedPage;
 
             private int index = 0;
 
             private IList<IPage> pages = new List<IPage>();
+            private List<IPage> pagesHistory = new List<IPage>();
 
             public event EventHandler<EventArgs> PageChanged;
 
@@ -82,6 +88,16 @@ namespace RetroGameHandler.Views
                     OnPageChanged();
                     OnPropertyChanged();
                 }
+            }
+
+            public bool IsNotFirst
+            {
+                get => index > 0;
+            }
+
+            public bool IsNotLast
+            {
+                get => index < pagesHistory.Count - 1;
             }
 
             public bool Add(IPage View)
@@ -109,8 +125,14 @@ namespace RetroGameHandler.Views
 
             public IPage NextPage()
             {
-                if (index + 1 >= pages.Count()) return Page;
-                return Page = pages.ElementAt(index + 1);
+                if (index + 1 >= pagesHistory.Count())
+                {
+                    return Page;
+                }
+                index++;
+                OnPropertyChanged("IsNotFirst");
+                OnPropertyChanged("IsNotLast");
+                return Page = pagesHistory.ElementAt(index);
             }
 
             public void OnPageChanged()
@@ -125,13 +147,31 @@ namespace RetroGameHandler.Views
 
             public IPage PreviousPage()
             {
-                if (index - 1 < 0) return Page;
-                return Page = pages.ElementAt(index - 1);
+                if (index - 1 < 0)
+                {
+                    return Page;
+                }
+
+                index--;
+                OnPropertyChanged("IsNotFirst");
+                OnPropertyChanged("IsNotLast");
+
+                return Page = pagesHistory.ElementAt(index);
             }
 
             public IPage SetPage<T>()
             {
                 Page = pages.FirstOrDefault(p => p is T) ?? Page;
+                var lst = pagesHistory.Count > index ? pagesHistory[index] : null;
+                if (lst == null || lst.GetType().Name != Page.GetType().Name)
+                {
+                    if (pagesHistory.Count > 0 && pagesHistory.Count - 1 != index && index > -1) pagesHistory.RemoveRange(index + 1, pagesHistory.Count - (index + 1));
+                    pagesHistory.Add(Page);
+                    index = pagesHistory.Count - 1;
+                    OnPropertyChanged("IsNotFirst");
+                    OnPropertyChanged("IsNotLast");
+                }
+
                 return Page;
             }
         }
