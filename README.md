@@ -39,5 +39,6 @@ Easy to use handler for Retro handheld consoles with built in FTP.
 - [ ] Improved user experience
  
  ### Screenshots. 
+![ScrapingWork](https://user-images.githubusercontent.com/7419588/85471994-8c8b4e00-b5b1-11ea-917f-3a50d658af49.png)
 ![ScrapingF](https://user-images.githubusercontent.com/7419588/85430577-96e12400-b580-11ea-959c-7e68f6454502.png)
 ![](http://timeonline.se/RGHandler/images/FTPExplorer.png)
