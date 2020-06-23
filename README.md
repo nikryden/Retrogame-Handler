@@ -29,7 +29,7 @@ Easy to use handler for Retro handheld consoles with built in FTP.
 ### Planed features for coming versions
 - [X] Liteweight game scraper for SimpleMenu 
 - [ ] Fix buggs 
-- [ ] Make it Core so it works on Linux and Mac OS 
+- [ ] Make it .net core so it works on Linux and Mac OS 
 - [ ] More functions in the FTP File manager(move files on the console, download files to PC and drag and drop files. ) 
 - [ ] Help to find and install application
 - [ ] Help to find and install games
