@@ -8,6 +8,12 @@ Easy to use handler for Retro handheld consoles with built in FTP.
 
 [Backup Existing Firmware](http://wagnerstechtalk.com/rg350tips/#Backup_Existing_Firmware)
 
+[v0.0.8.33 Alfa version](https://github.com/nikryden/Retrogame-Handler/releases)
+
+### Features in v0.0.8.33-Alfa version
+ - [x] Lite weight game scraper for SimpleMenu.
+ - [x] Some preformence boost.
+
 [v0.0.7452.36755 Alfa version](https://github.com/nikryden/Retrogame-Handler/releases)
 
  ### Features in v0.0.7452.36755 Alfa version
@@ -22,7 +28,7 @@ Easy to use handler for Retro handheld consoles with built in FTP.
 
 ### Planed features for coming versions
 - [ ] Fix buggs 
-- [ ] Liteweight game scraper for SimpleMenu 
+- [X] Liteweight game scraper for SimpleMenu 
 - [ ] More functions in the FTP File manager(move files on the console, download files to PC and drag and drop files. ) 
 - [ ] Help to find and install application
 - [ ] Help to find and install games
@@ -32,5 +38,5 @@ Easy to use handler for Retro handheld consoles with built in FTP.
 - [ ] Improved user experience
  
  ### Screenshots. 
-
+![ScrapingF](https://user-images.githubusercontent.com/7419588/85430577-96e12400-b580-11ea-959c-7e68f6454502.png)
 ![](http://timeonline.se/RGHandler/images/FTPExplorer.png)
