@@ -33,7 +33,7 @@ Easy to use handler for Retro handheld consoles with built in FTP.
 - [ ] Help to find and install application
 - [ ] Help to find and install games
 - [ ] Backup of the main sd card
-- [ ] Support for password
+- [ ] FTP Support for password
 - [ ] More resource links
 - [ ] Improved user experience
  
