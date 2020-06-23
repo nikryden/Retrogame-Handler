@@ -8,7 +8,7 @@ Easy to use handler for Retro handheld consoles with built in FTP.
 
 [Please backup Existing Firmware](http://wagnerstechtalk.com/rg350tips/#Backup_Existing_Firmware)
 
-[v0.0.8.33 Alfa version](https://github.com/nikryden/Retrogame-Handler/releases)
+[v0.0.8.33 Alfa version](https://github.com/nikryden/Retrogame-Handler/releases/tag/0.0.8.33-Alpha)
 
 ### Features in v0.0.8.33-Alfa version
  - [x] Lite weight game scraper for SimpleMenu.
