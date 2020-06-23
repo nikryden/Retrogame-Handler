@@ -1,0 +1,251 @@
+﻿<UserControl x:Class="RetroGameHandler.Views.ScrapFolderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:local="clr-namespace:RetroGameHandler.Views"
+             xmlns:qc="clr-namespace:RetroGameHandler.Converter"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <qc:VisibleIfTrueConverterInverted x:Key="VisibleIfTrueConverterInverted" />
+        <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+
+        <Style TargetType="TextBlock" x:Key="LinkCharStyle">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="Gray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+            <TextBlock Text="Scrap folder:" Margin="0,0,5,0" FontWeight="Bold" />
+            <TextBlock Text="{Binding FtpListItem.mFullName}" />
+        </StackPanel>
+        <ComboBox SelectionChanged="ComboBox_SelectionChanged" Grid.Column="1" Height="24" VerticalAlignment="Top" ItemsSource="{Binding PlatformModels}" SelectedValue="{Binding SelectedPlatform}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Margin="5,0" Width="20" Height="20">
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="{Binding Image.ImageSource}" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <TextBlock Text="{Binding Name}" Margin="5,0,0,0" />
+                        <TextBlock Text="{Binding Id}" Margin="5,0,0,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <StackPanel Grid.Column="2" Orientation="Vertical">
+            <Button x:Name="btnScrap"  Content="Scrap" Click="btnScrap_Click" Margin="5,0,5,5" Height="24" FontSize="16" FontWeight="Bold" IsEnabled="False" />
+            <CheckBox x:Name="cbUseDirectory" Content="Use Directory name" Margin="2,5" Foreground="White" />
+        </StackPanel>
+
+        <StackPanel  x:Name="spPbScraping" Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" Visibility="Collapsed">
+            <ProgressBar x:Name="pbScraping"  VerticalAlignment="Bottom"  Height="25" IsIndeterminate="False" Width="655" />
+            <Button x:Name="btnCancelScrap" Content="Cancel"  Height="25" VerticalAlignment="Bottom" Padding="10,0" Margin="5,0" Click="btnCancelScrap_Click" />
+        </StackPanel>
+        <TextBlock x:Name="status"  Grid.ColumnSpan="2" Grid.Row="1"  Margin="10,10,0,0" VerticalAlignment="Center" Foreground="Black" />
+
+        <TextBlock x:Name="percent"  Grid.Row="1" Grid.Column="1" Margin="10,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="Black" />
+        <StackPanel x:Name="spDownloadImageList"  Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"  Visibility="Hidden" Orientation="Vertical">
+            <ListView x:Name="DownloadImageList" VerticalAlignment="Stretch" Height="350">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24" />
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <RadioButton GroupName="{Binding Name}" IsChecked="{Binding IsSelected}" Visibility="{Binding  ShowCheckbox,Converter={StaticResource VisibleIfTrueConverter}}" />
+                            <Rectangle Grid.Column="1" Margin="5,0" Width="120" Height="120" Visibility="{Binding  HasImage,Converter={StaticResource VisibleIfTrueConverter}}">
+                                <Rectangle.Fill>
+                                    <ImageBrush ImageSource="{Binding Image.ImageSource}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock Text="Found no images" Grid.Column="1"
+                                   FontWeight="Bold"
+                                   Visibility="{Binding  HasImage,Converter={StaticResource VisibleIfTrueConverterInverted}}" />
+                            <TextBlock Text="{Binding GameTitle}" Grid.Column="2" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock FontWeight="Bold" FontSize="14" Text="{Binding Name}" />
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+            <StackPanel x:Name="spprewController" Orientation="Horizontal" Height="25" Margin="0,5">
+                <!--<Button Background="Transparent" BorderThickness="0" Margin="0,0,10,0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Grid x:Name="grid">
+                                            <Border x:Name="border" Background="Coral"  CornerRadius="10" BorderBrush="Black" BorderThickness="2">
+
+                                                <ContentPresenter x:Name="content" HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          TextElement.FontWeight="Bold"
+
+                                                  Margin="0">
+                                                </ContentPresenter>
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="Coral" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="True">
+                                                <Setter Property="Cursor" TargetName="grid" Value="Hand" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Background" TargetName="border" Value="Gray" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                    <fa:ImageAwesome Icon="ArrowCircleLeft" Foreground="white" />
+                </Button>-->
+                <TextBlock x:Name="tA" Text="A" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tB" Text="B" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand"  Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tC" Text="C" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tD" Text="D" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tE" Text="E" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tF" Text="F" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tG" Text="G" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tH" Text="H" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tI" Text="I" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tJ" Text="J" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tK" Text="K" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tL" Text="L" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tM" Text="M" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tN" Text="N" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tO" Text="O" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tP" Text="P" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tQ" Text="Q" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tR" Text="R" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tS" Text="S" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tT" Text="T" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tU" Text="U" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tV" Text="V" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tW" Text="W" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tX" Text="X" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tY" Text="Y" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tZ" Text="Z" Margin="5,0"  PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="t0_9" Text="0-9" Margin="5,0" PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" Style="{ StaticResource LinkCharStyle}" />
+                <TextBlock x:Name="tNoSelected" Text="None selected" Margin="5,0" PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" />
+                <TextBlock x:Name="tNotFound" Text="Not found" Margin="5,0" PreviewMouseDown="tbxAlfa_PreviewMouseDown" Cursor="Hand" />
+                <!--<Button>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Grid x:Name="grid">
+                                            <Border x:Name="border" Background="Coral"  CornerRadius="10" BorderBrush="Black" BorderThickness="2">
+
+                                                <ContentPresenter x:Name="content" HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          TextElement.FontWeight="Bold"
+                                                  Margin="0">
+                                                </ContentPresenter>
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="Coral" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="True">
+                                                <Setter Property="Cursor" TargetName="grid" Value="Hand" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Background" TargetName="border" Value="Gray" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                    <fa:ImageAwesome Icon="ArrowCircleRight" Foreground="white" />
+                </Button>-->
+            </StackPanel>
+        </StackPanel>
+        <StackPanel x:Name="spUploadImages" Grid.Row="2" Grid.Column="2" Margin="10,10">
+            <Expander IsExpanded="True" Foreground="White" Header="Statistics" BorderThickness="1" BorderBrush="Aqua">
+                <StackPanel Margin="10">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Files scraped:" Margin="0,0,5,0" />
+                        <TextBlock Text="{Binding FilesToScrape}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Found with images:" Margin="0,0,5,0" />
+                        <TextBlock Text="{Binding FoundWithImages}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Is selected:" Margin="0,0,5,0" />
+                        <TextBlock Text="{Binding IsSelected}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Images not found:" Margin="0,0,5,0" />
+                        <TextBlock Text="{Binding MissingImages}" />
+                    </StackPanel>
+                </StackPanel>
+            </Expander>
+            <Grid Margin="0,10,0,0">
+                <ProgressBar Name="pbUpload" Height="14" Background="#FFAEA3A3" />
+                <ProgressBar Name="pbUpload2" Height="14" Foreground="Gray" Background="{x:Null}" Opacity="0.4" />
+                <TextBlock x:Name="uploadStatus" Text=""  HorizontalAlignment="Center" Background="Transparent" Foreground="Black" />
+            </Grid>
+            <StackPanel x:Name="spUploadSettings" IsEnabled="False">
+                <TextBlock Name="pbUploadStaus" Height="14" Margin="0,5,0,0" />
+                <TextBlock Text="Image size" Height="14" Margin="0,3,0,5" Foreground="White" />
+                <RadioButton Tag="small"  GroupName="grpSize" Content="small ~152x150 px" Foreground="White" />
+                <RadioButton Tag="thumb" GroupName="grpSize" Content="tum ~305x300 px" Foreground="White" IsChecked="True" />
+                <RadioButton Tag="original" GroupName="grpSize" Content="original ~783x768 px" Foreground="White" />
+                <RadioButton Tag="medium" GroupName="grpSize" Content="medium ~734x720 px" Foreground="White" />
+                <RadioButton Tag="large" GroupName="grpSize" Content="large ~1101x1080 px" Foreground="White" />
+                <RadioButton Tag="cropped_center_thumb" GroupName="grpSize" Content="croped ~533x300 px" Foreground="White" />
+                <RadioButton Tag="custom" GroupName="grpSize" Foreground="White" IsEnabled="False" Margin="0,5,0,0" Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="custom" Margin="0,0,5,0" />
+                        <TextBox Text="3" Margin="0,0,5,0"  MinWidth="30" />
+                        <TextBlock Text="x" Margin="0,0,5,0" />
+                        <TextBox Text="3"  Margin="0,0,5,0"  MinWidth="30" />
+                        <TextBlock Text="px" Margin="0,0,5,0" />
+                    </StackPanel>
+                </RadioButton>
+                <Button x:Name="btnUploadToConsole" Margin="0,10" Content="Upload to console" IsEnabled="{Binding IsSelected}" Click="btnUploadToConsole_Click" Height="30" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace RetroGameHandler.Entities
 {
-    public class RGHSettingsEntity : EntityBase
+    public class RGHSettingsEntity : LiteDbEntityBase
     {
         [BsonId]
-        public ObjectId Id { get; set; }
+        public new ObjectId Id { get; set; }
 
         public bool ShowInActivities { get; set; } = true;
         public FTPSettingsEntity SelectedFtpSetting { get; set; }

@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="RetroGameHandler.Views.firstPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:local="clr-namespace:RetroGameHandler.Views"
+             mc:Ignorable="d"
+             Loaded="UserControl_Loaded"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="Button">
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" Background="Coral"  CornerRadius="2" BorderBrush="Black" BorderThickness="2">
+
+                                <ContentPresenter HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          TextElement.FontWeight="Bold"
+                                                  Margin="20,5">
+                                </ContentPresenter>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" TargetName="border" Value="coral" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" TargetName="border" Value="#FF33962B" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="0,10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Background="Transparent" Margin="15,0">
+
+            <Button x:Name="btnResorces" Click="btnResorces_Click">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome Icon="Resistance" Height="16" Foreground="Black" />
+                    <TextBlock Grid.Column="1" Text="Resorces" Margin="5,0,0,0" FontWeight="Bold" />
+                </Grid>
+            </Button>
+
+            <Button x:Name="btnExplorer" Click="btnExplorer_Click">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome Icon="Gamepad" Height="16" Foreground="Black" />
+                    <TextBlock Grid.Column="1" Text="Explorer" Margin="5,0,0,0" FontWeight="Bold" />
+                </Grid>
+            </Button>
+
+            <Button x:Name="btnOtionsMenu" Click="btnOtionsMenu_Click">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome Icon="Cog" Height="16" Foreground="Black" />
+                    <TextBlock  Grid.Column="1" Text="Option" Margin="5,0,0,0" FontWeight="Bold" />
+                </Grid>
+            </Button>
+
+            <Button x:Name="btnOtionsHelp" Click="btnOtionsHelp_Click">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome Icon="SignIn" Height="16" Foreground="Black" />
+                    <TextBlock Grid.Column="1" Text="Scraper" Margin="5,0,0,0" FontWeight="Bold" />
+                </Grid>
+            </Button>
+            <!--<Button x:Name="btnDriverInstall" Content="Install USb driver" Click="btnDriverInstall_Click" />-->
+        </StackPanel>
+
+        <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="0" CornerRadius="2" Background="Transparent" Margin="10,0">
+            <Grid>
+                <Image x:Name="imgInfo" Source="../images/info.png" VerticalAlignment="Top" />
+                <!--<WebBrowser x:Name="brwsrInfo"  />-->
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

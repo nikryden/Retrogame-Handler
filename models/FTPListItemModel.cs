@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace RetroGameHandler.models
@@ -122,6 +123,33 @@ namespace RetroGameHandler.models
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public async Task GetChild(bool refreshData = false)
+        {
+            await Task.Run(() =>
+            {
+                if (!IsDirectoryOrLink) return;
+                if (Items.Any(i => i == null) || refreshData) App.Current.Dispatcher.Invoke((Action)delegate { Items.Clear(); });
+                var ftpItems = FtpHandler.Instance.List(mFullName);
+                foreach (var f in ftpItems)
+                {
+                    var ftp = new FtpListItemModel(f);
+                    App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                    {
+                        if (!Items.Any(p => p.FullName == ftp.FullName)) Items.Add(ftp);
+                    });
+
+                    foreach (var item in Items)
+                    {
+                        if (item.Type == FtpFileSystemObjectType.File) continue;
+                        App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                        {
+                            item.Items.Add(null);
+                        });
+                    }
+                }
+            });
         }
     }
 

@@ -193,5 +193,14 @@ namespace RetroGameHandler.Views
 
             ((Button)sender).IsEnabled = true;
         }
+
+        private void ScrapeFolder_Click(object sender, RoutedEventArgs e)
+        {
+            var page = PageHandler.GetPageByType<ScrapFolderView>();
+            Button bt = (Button)sender;
+            var ftpItmListM = (FtpListItemModel)bt.DataContext;
+            ((ScrapFolderViewModel)page.ViewModel).FtpListItem = ftpItmListM;
+            PageHandler.Instance.SetPage<ScrapFolderView>();
+        }
     }
 }

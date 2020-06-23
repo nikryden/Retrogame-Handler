@@ -177,6 +177,15 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                            <Button x:Name="ScrapeFolder"
+                                     Margin="0,5,5,0"
+                                     Padding="2"
+                                     Height="24"
+                                     Click="ScrapeFolder_Click"
+                                     ToolTip="Scrape folder for game images">
+                                <fa:ImageAwesome Icon="Image" Width="18" Height="18" />
+                            </Button>
+
                             <Button x:Name="UpladFile"
                                      Margin="0,5,5,0"
                                      Padding="2"
