@@ -6,7 +6,7 @@ Retrogame Handler!
 Easy to use handler for Retro handheld consoles with built in FTP.
 ## Warning! This is a Alpha build and it is used at your own risk.
 
-[Backup Existing Firmware](http://wagnerstechtalk.com/rg350tips/#Backup_Existing_Firmware)
+[Please backup Existing Firmware](http://wagnerstechtalk.com/rg350tips/#Backup_Existing_Firmware)
 
 [v0.0.8.33 Alfa version](https://github.com/nikryden/Retrogame-Handler/releases)
 
