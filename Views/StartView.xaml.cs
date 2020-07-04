@@ -214,7 +214,7 @@ namespace RetroGameHandler.Views
             var par = button.Parent;
             var ftpItmListM = (FtpListItemModel)button.DataContext;
             var notPad = (NotePad)PageHandler.GetPageByType<NotePad>();
-            notPad.LoadTextPath(ftpItmListM.FullName);
+            notPad.LoadTextPath(ftpItmListM.FullName, ftpItmListM.Name);
             PageHandler.SelectedPage<NotePad>();
         }
     }
