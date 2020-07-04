@@ -218,6 +218,15 @@
                         <TextBlock Text="{Binding mFullName}" Margin="0" FontStyle="Oblique" Foreground="CadetBlue" TextDecorations="Underline" TextWrapping="Wrap"  Height="50" VerticalAlignment="Top" Padding="5,2" />
                     </Grid>
                     <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                        
+                        <Button x:Name="EditFile"
+                                     Margin="0,5,5,0"
+                                     Padding="2"
+                                     Height="24"
+                                     Click="EditFile_Click"
+                                     ToolTip="Edit file">
+                            <fa:ImageAwesome Icon="Edit" Width="18" Height="18" />
+                        </Button>
                         <Button x:Name="DeleteFile"
                                      Margin="0,5,5,0"
                                      Padding="2"

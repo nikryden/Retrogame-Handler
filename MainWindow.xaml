@@ -81,6 +81,7 @@
                                     <fa:ImageAwesome Icon="Cog"  Foreground="White" />
                                 </MenuItem.Icon>
                             </MenuItem>
+                           
                         </MenuItem>
 
                         <MenuItem x:Name="HelpPage" Margin="5,0" Header="Help" Template="{DynamicResource MenuItemControlTemplate1}">

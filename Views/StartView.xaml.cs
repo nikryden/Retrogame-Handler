@@ -140,6 +140,11 @@ namespace RetroGameHandler.Views
             var button = (Button)sender;
             var par = button.Parent;
             var ftpItmListM = (FtpListItemModel)button.DataContext;
+            if (MessageBox.Show($"Delete file {ftpItmListM.Name}?", "Delete", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            {
+                return;
+            }
+
             var ftpHelper = new FtpHelper();
             var cancellationToken = new CancellationToken();
             await ftpHelper.DeletedFileAsync(ftpItmListM.FullName, cancellationToken);
@@ -201,6 +206,16 @@ namespace RetroGameHandler.Views
             var ftpItmListM = (FtpListItemModel)bt.DataContext;
             ((ScrapFolderViewModel)page.ViewModel).FtpListItem = ftpItmListM;
             PageHandler.Instance.SetPage<ScrapFolderView>();
+        }
+
+        private void EditFile_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+            var par = button.Parent;
+            var ftpItmListM = (FtpListItemModel)button.DataContext;
+            var notPad = (NotePad)PageHandler.GetPageByType<NotePad>();
+            notPad.LoadTextPath(ftpItmListM.FullName);
+            PageHandler.SelectedPage<NotePad>();
         }
     }
 }

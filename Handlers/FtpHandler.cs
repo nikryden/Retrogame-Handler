@@ -163,7 +163,7 @@ namespace RetroGameHandler.Handlers
             return xpath;
         }
 
-        public void DownloadStream(string path, Stream outStream)
+        public bool DownloadStream(string path, Stream outStream)
         {
             try
             {
@@ -172,12 +172,13 @@ namespace RetroGameHandler.Handlers
                 {
                     clientConnect2.Host = RGHSett.FtpHost;
                     clientConnect2.Connect();
-                    var cl = clientConnect2.Download(outStream, path);
+                    return clientConnect2.Download(outStream, path);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                return false;
             }
         }
 

@@ -27,6 +27,7 @@ namespace RetroGameHandler
             PageHandler.AddPage(new FtpSettingsView());
             PageHandler.AddPage(new OptionsView());
             PageHandler.AddPage(new ScrapFolderView());
+            PageHandler.AddPage(new NotePad());
 
             this.DataContext = PageHandler.Instance;
             PageHandler.SelectedPage<firstPage>();
@@ -116,6 +117,11 @@ namespace RetroGameHandler
         private void btnNextPage_Click(object sender, RoutedEventArgs e)
         {
             PageHandler.Instance.NextPage();
+        }
+
+        private void NotePadMenu_Click(object sender, RoutedEventArgs e)
+        {
+            PageHandler.SelectedPage<NotePad>();
         }
     }
 }
