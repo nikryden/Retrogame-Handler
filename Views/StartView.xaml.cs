@@ -63,18 +63,31 @@ namespace RetroGameHandler.Views
             }
         }
 
-        private void TreeView_TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private async void TreeView_TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             try
             {
                 var textBlock = (TextBlock)sender;
-                var ftpItmListM = (FtpListItemModel)textBlock.DataContext;
+                textBlock.Cursor = Cursors.Wait;
+                 var ftpItmListM = (FtpListItemModel)textBlock.DataContext;
                 if (ftpItmListM.IsImage)
                 {
                     ftpItmListM.GetImage();
                 }
+                if (ftpItmListM.IsOpk)
+                {
+                    var info = await ftpItmListM.GetOpkInfo();
+                    this.Dispatcher.Invoke((Action)delegate // <--- HERE
+                    {
+                        opkName.Text = info?.Name ?? "";
+                        opkComment.Text = info?.Comment ?? "";
+                        opkType.Text = info?.Type ?? "";
+                        opkImage.Source = info?.Image;
+                    });
+                }
                 DirFileInfo.DataContext = ftpItmListM;
                 DirFileInfo.Visibility = Visibility.Visible;
+                textBlock.Cursor = Cursors.Arrow;
             }
             catch (Exception ex)
             {

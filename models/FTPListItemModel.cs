@@ -4,10 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using SevenZipExtractor;
+using System.Windows.Forms;
 
 namespace RetroGameHandler.models
 {
@@ -15,7 +18,7 @@ namespace RetroGameHandler.models
     {
         private BitmapImage _image;
 
-        private new List<string> ImageFileExtensions = new List<string>() { ".png", ".jpg" };
+        private new List<string> ImageFileExtensions = new List<string>() { ".png", ".jpg", ".bmp" };
 
         public FtpListItemModel()
         {
@@ -73,6 +76,14 @@ namespace RetroGameHandler.models
             }
         }
 
+        public bool IsOpk
+        {
+            get
+            {
+                return (IsFile && Path.GetExtension(Name) == ".opk");
+            }
+        }
+
         public bool IsLink { get => mType == FtpFileSystemObjectType.Link; }
         public ObservableCollection<FtpListItemModel> Items { get; set; } = new ObservableCollection<FtpListItemModel>();
 
@@ -102,6 +113,70 @@ namespace RetroGameHandler.models
         public long mSize { get => Size; }
         public FtpFileSystemObjectSubType mSubType { get => SubType; }
         public FtpFileSystemObjectType mType { get => Type; }
+
+        public async Task<opkInfo> GetOpkInfo()
+        {
+            return await Task.Run(() =>
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    var opk = FtpHandler.Instance.DownloadStream(FullName, ms);
+
+                    ms.Position = 0;
+
+                    using (ArchiveFile archiveFile = new ArchiveFile(ms, SevenZipFormat.SquashFS))
+                    {
+                        var ls = archiveFile.Entries.FirstOrDefault(e => e.FileName.EndsWith("gcw0.desktop"));
+                        if (ls != null)
+                        {
+                            var str = ls.ToString();
+                            using (MemoryStream memoryStream = new MemoryStream())
+                            {
+                                ls.Extract(memoryStream);
+                                using (StreamReader reader = new StreamReader(memoryStream))
+                                {
+                                    reader.BaseStream.Position = 0;
+                                    var txt = reader.ReadToEnd();
+                                    var texts = txt.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                                    var opkinf = new opkInfo();
+                                    var opkType = opkinf.GetType();
+                                    for (int i = 1; i < texts.Length; i++)
+                                    {
+                                        var sp = texts[i].Split('=');
+                                        var prop = opkType.GetProperty(sp[0].Trim());
+                                        if (prop == null) continue;
+                                        prop.SetValue(opkinf, sp[1].Trim());
+                                    }
+                                    var img = archiveFile.Entries.FirstOrDefault(e => e.FileName == $"{opkinf.Icon}.png");
+                                    if (img != null)
+                                    {
+                                        using (MemoryStream msimg = new MemoryStream())
+                                        {
+                                            img.Extract(msimg);
+                                            App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                                            {
+                                                //App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                                                //{
+                                                var bmi = new BitmapImage();
+                                                bmi.BeginInit();
+                                                bmi.CacheOption = BitmapCacheOption.OnLoad;
+                                                bmi.StreamSource = msimg;
+                                                opkinf.Image = bmi;
+                                                bmi.EndInit();
+                                                //});
+                                            });
+                                        }
+                                    }
+                                    return opkinf;
+                                }
+                            }
+                        }
+                    }
+
+                    return null;
+                }
+            });
+        }
 
         public void GetImage(bool overwrightIfExists = true)
         {
@@ -176,5 +251,22 @@ namespace RetroGameHandler.models
         public string FtpFullName { get; set; }
         public ObservableCollection<FtpNameData> Items { get; set; }
         public string Name { get => FtpFullName.Contains("/") ? FtpFullName.Substring(FtpFullName.LastIndexOf("/") + 1) : FtpFullName; }
+    }
+
+    public class opkInfo
+    {
+        public opkInfo()
+        {
+        }
+
+        public string Name { get; set; }
+        public string Comment { get; set; }
+        public string Exec { get; set; }
+        public string Terminal { get; set; }
+        public string Type { get; set; }
+        public string StartupNotify { get; set; }
+        public string Icon { get; set; }
+        public string Categories { get; set; }
+        public BitmapImage Image { get; set; }
     }
 }

@@ -213,12 +213,22 @@
                         <TextBlock Text="{Binding mSize,Converter={StaticResource ByteSizeConverter}}" Margin="0,12,5,0" />
                     </StackPanel>
                     <Image Source="{Binding Image}" MaxWidth="320" MaxHeight="240" Grid.Row="1"  HorizontalAlignment="Left" Visibility="{Binding IsImage,Converter={StaticResource VisibleIfTrueConverter}}" />
+                    <StackPanel Orientation="Vertical" Margin="0,10" Grid.Row="1" Visibility="{Binding IsOpk,Converter={StaticResource VisibleIfTrueConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image x:Name="opkImage" Width="16" />
+                            <TextBlock x:Name="opkName" Margin="10,0" FontWeight="Bold"/>
+                        </StackPanel>  
+                        
+                        <TextBlock x:Name="opkType" />
+                        <TextBlock x:Name="opkComment" />
+                    </StackPanel>
+
                     <Grid Grid.Column="0" Grid.Row="2">
 
                         <TextBlock Text="{Binding mFullName}" Margin="0" FontStyle="Oblique" Foreground="CadetBlue" TextDecorations="Underline" TextWrapping="Wrap"  Height="50" VerticalAlignment="Top" Padding="5,2" />
                     </Grid>
                     <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                        
+
                         <Button x:Name="EditFile"
                                      Margin="0,5,5,0"
                                      Padding="2"
