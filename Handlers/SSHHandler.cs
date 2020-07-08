@@ -25,6 +25,7 @@ namespace RetroGameHandler.Handlers
                 }
                 catch (Exception ex)
                 {
+                    ErrorHandler.Error(ex);
                     Console.WriteLine(ex);
                     return false;
                 }
@@ -48,6 +49,7 @@ namespace RetroGameHandler.Handlers
                 }
                 catch (Exception ex)
                 {
+                    ErrorHandler.Error(ex);
                     Console.WriteLine(ex);
                     return default;
                 }
@@ -112,6 +114,7 @@ namespace RetroGameHandler.Handlers
                 }
                 catch (Exception ex)
                 {
+                    ErrorHandler.Error(ex);
                     Console.WriteLine(ex);
                     return default;
                 }
@@ -136,6 +139,7 @@ namespace RetroGameHandler.Handlers
                 }
                 catch (Exception ex)
                 {
+                    ErrorHandler.Error(ex);
                     Console.WriteLine(ex);
                     return default;
                 }
@@ -159,6 +163,7 @@ namespace RetroGameHandler.Handlers
                 }
                 catch (Exception ex)
                 {
+                    ErrorHandler.Error(ex);
                     Console.WriteLine(ex);
                     return default;
                 }

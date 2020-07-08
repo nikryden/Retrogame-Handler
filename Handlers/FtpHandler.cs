@@ -177,6 +177,7 @@ namespace RetroGameHandler.Handlers
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
                 return false;
             }
@@ -207,6 +208,7 @@ namespace RetroGameHandler.Handlers
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
                 return false;
             }
@@ -295,14 +297,70 @@ namespace RetroGameHandler.Handlers
                     await clientConnect2.AutoConnectAsync();
                     await clientConnect2.DeleteFileAsync(remotePath, cancellationToken);
                 }
-
-                var path2 = remotePath.Replace("/", @"\").Replace(@"\.", "").Substring(1);
-                path2 = Path.Combine("TimeOnline", path2);
-                var tmpPath = Path.Combine(Path.GetTempPath(), path2);
-                if (File.Exists(tmpPath)) File.Delete(tmpPath);
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        public async Task RenameDirectory(string fromPath, string toPath, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    await clientConnect2.AutoConnectAsync();
+                    await clientConnect2.MoveDirectoryAsync(fromPath, toPath, FtpRemoteExists.Overwrite, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        public async Task RenameFile(string fromPath, string toPath, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    await clientConnect2.AutoConnectAsync();
+                    await clientConnect2.MoveFileAsync(fromPath, toPath, FtpRemoteExists.Overwrite, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        public async Task DeleteDirectoryAsync(string remotePath, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    await clientConnect2.AutoConnectAsync();
+                    await clientConnect2.DeleteDirectoryAsync(remotePath, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
                 throw;
             }
@@ -347,6 +405,7 @@ namespace RetroGameHandler.Handlers
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
                 return new List<FtpListItem>();
             }

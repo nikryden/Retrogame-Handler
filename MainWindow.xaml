@@ -81,15 +81,31 @@
                                     <fa:ImageAwesome Icon="Cog"  Foreground="White" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                           
                         </MenuItem>
 
                         <MenuItem x:Name="HelpPage" Margin="5,0" Header="Help" Template="{DynamicResource MenuItemControlTemplate1}">
-                            <MenuItem x:Name="AboutPage" Margin="5,0" Header="About" Template="{DynamicResource MenuItemControlTemplate1}" />
+                            <MenuItem x:Name="LogPage"
+                                      Header="Logs"
+                                      Click="LogPage_Click"
+                                       Padding="10,2,10,0"
+                                      Template="{DynamicResource MenuItemControlTemplate1}">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="Bug" Foreground="White" Width="12" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem x:Name="AboutPage"
+                                      Header="About"
+                                       Padding="10,2,10,0"
+                                      Template="{DynamicResource MenuItemControlTemplate1}">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="QuestionCircleOutline" Foreground="White" Width="12" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </MenuItem>
                         <MenuItem Margin="5,0" Header=""
                                   Template="{DynamicResource MenuItemControlTemplate1}"
                                   x:Name="miHome"
+                                   Padding="10,2,10,0"
                                   Click="miHome_Click">
                             <MenuItem.Icon>
                                 <fa:ImageAwesome Icon="Home" Foreground="Black" Width="12" />

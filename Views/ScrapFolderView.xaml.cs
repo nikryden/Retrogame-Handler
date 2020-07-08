@@ -213,6 +213,7 @@ namespace RetroGameHandler.Views
                                     }
                                     catch (Exception ex)
                                     {
+                                        ErrorHandler.Error(ex);
                                         return;
                                     }
                                 }
@@ -230,6 +231,7 @@ namespace RetroGameHandler.Views
                 }
                 catch (Exception ex)
                 {
+                    ErrorHandler.Error(ex);
                     Console.WriteLine(ex);
                     return;
                 }
@@ -293,6 +295,7 @@ namespace RetroGameHandler.Views
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 Debug.WriteLine(ex);
                 return true;
             }
@@ -326,6 +329,7 @@ namespace RetroGameHandler.Views
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 return false;
             }
         }
@@ -366,6 +370,7 @@ namespace RetroGameHandler.Views
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 Debug.WriteLine(ex);
             }
             finally

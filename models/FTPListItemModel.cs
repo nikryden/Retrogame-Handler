@@ -121,9 +121,7 @@ namespace RetroGameHandler.models
                 using (MemoryStream ms = new MemoryStream())
                 {
                     var opk = FtpHandler.Instance.DownloadStream(FullName, ms);
-
                     ms.Position = 0;
-
                     using (ArchiveFile archiveFile = new ArchiveFile(ms, SevenZipFormat.SquashFS))
                     {
                         var ls = archiveFile.Entries.FirstOrDefault(e => e.FileName.EndsWith("gcw0.desktop"));
@@ -155,15 +153,12 @@ namespace RetroGameHandler.models
                                             img.Extract(msimg);
                                             App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
                                             {
-                                                //App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
-                                                //{
                                                 var bmi = new BitmapImage();
                                                 bmi.BeginInit();
                                                 bmi.CacheOption = BitmapCacheOption.OnLoad;
                                                 bmi.StreamSource = msimg;
                                                 opkinf.Image = bmi;
                                                 bmi.EndInit();
-                                                //});
                                             });
                                         }
                                     }
@@ -182,16 +177,17 @@ namespace RetroGameHandler.models
         {
             if (IsImage && Image == null)
             {
-                var pathImage = FtpHandler.Instance.DownloadFile(FullName, Name, overwrightIfExists);
-                App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                //var pathImage = FtpHandler.Instance.DownloadFile(FullName, Name, overwrightIfExists);
+
+                using (MemoryStream mem = new MemoryStream())
                 {
-                    var bmi = new BitmapImage();
-                    bmi.BeginInit();
-                    bmi.CacheOption = BitmapCacheOption.OnLoad;
-                    bmi.UriSource = new Uri(pathImage, UriKind.Absolute);
-                    Image = bmi;
-                    bmi.EndInit();
-                });
+                    FtpHandler.Instance.DownloadStream(FullName, mem);
+
+                    App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                    {
+                        Image = TheGamesDbHandler.LoadImage(mem);
+                    });
+                }
             }
         }
 

@@ -4,20 +4,10 @@ using Microsoft.Win32;
 using RetroGameHandler.Handlers;
 using RetroGameHandler.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RetroGameHandler.Views
 {
@@ -28,7 +18,7 @@ namespace RetroGameHandler.Views
     {
         public PageControllHandler PageControllHandler { get; set; } = new PageControllHandler();
         public string Title { get; set; } = "NotPage";
-        public BaseViewModel ViewModel { get; set; } = new ScrapFolderViewModel();
+        public BaseViewModel ViewModel { get; set; }
         private ScrapFolderViewModel _vieModel { get; set; }
         private string _path = "";
         private readonly SearchPanel searchPanel;
@@ -64,16 +54,6 @@ namespace RetroGameHandler.Views
                 FtpHandler.Instance.DownloadStream(_path, stream);
                 stream.Position = 0;
                 aEditor.Load(stream);
-                //using (StreamReader reader = new StreamReader(stream))
-                //{
-                //    reader.BaseStream.Position = 0;
-                //    rtbEditor.Text = reader.ReadToEnd();
-                //    aEditor.Text = rtbEditor.Text;
-                //    rtbEditor.Focus();
-                //    rtbEditor.SelectionStart = 0;
-                //    rtbEditor.SelectionLength = 0;
-                //    rtbEditor.Select(0, 1);
-                //}
             }
         }
 
@@ -108,17 +88,6 @@ namespace RetroGameHandler.Views
                     MessageBox.Show("Could not save!", "Save", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-        }
-
-        private void cmbFontFamily_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //if (cmbFontFamily.SelectedItem != null)
-            //    rtbEditor.Selection.ApplyPropertyValue(Inline.FontFamilyProperty, cmbFontFamily.SelectedItem);
-        }
-
-        private void cmbFontSize_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //rtbEditor.Selection.ApplyPropertyValue(Inline.FontSizeProperty, cmbFontSize.Text);
         }
 
         private void Download_Click(object sender, RoutedEventArgs e)

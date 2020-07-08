@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using RetroGameHandler.Entities;
 using RetroGameHandler.models;
 using System.Linq;
 
@@ -8,6 +9,7 @@ namespace RetroGameHandler.Handlers
     {
         public static string ProgGuid { get; } = "a796d1b6844b44bfaaffe2a333199c05";
         public static string ScrapPath { get; } = "https://timeonline.se/api/";
+        public static ErrorLevel LogLevel { get; set; } = ErrorLevel.DEBUG;
         public static bool AutoSave { get; set; } = true;
         public static RGHSettingsModel ProgramSetting { get; set; }
 
