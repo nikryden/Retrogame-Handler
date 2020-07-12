@@ -8,7 +8,25 @@ Easy to use handler for Retro handheld consoles with built in FTP.
 I have don this project firstly for my own needs so please have patience. 
 If you have some free time and like to help with coding or testing or have sugestions, please contact me on [reddit](https://www.reddit.com/user/nikryd/)
 
-## Warning! This is a Alpha build and it is used at your own risk.
+## Warning! This is a Beta build and it is used at your own risk.
+
+[v0.0.9-Beta](https://github.com/nikryden/Retrogame-Handler/releases/tag/0.0.9-beta)
+### Features in v0.0.9-beta version
+
+### FTP ###
+1. Upload/Download file/s or directories
+2. Rename file or directory
+3. Edit text files and save to console
+4. Image previews 
+5. .opk info (this is slow)
+
+
+### Scrap images  ###
+1. Using less memory
+2. improved error handling 
+
+### New log handler ###
+1. Log viewer
 
 [Please backup Existing Firmware](http://wagnerstechtalk.com/rg350tips/#Backup_Existing_Firmware)
 
