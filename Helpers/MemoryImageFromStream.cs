@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RetroGameHandler.Handlers;
+using System;
 using System.Windows.Media.Imaging;
 
 namespace RetroGameHandler.Helpers
@@ -9,6 +10,7 @@ namespace RetroGameHandler.Helpers
         {
             if (stream.CanRead)
             {
+                stream.Position = 0;
                 BitmapImage image = new BitmapImage();
 
                 try
@@ -25,6 +27,7 @@ namespace RetroGameHandler.Helpers
                 }
                 catch (Exception ex)
                 {
+                    ErrorHandler.Error(ex);
                     Console.WriteLine(ex);
                     return default;
                 }

@@ -44,6 +44,7 @@ namespace RetroGameHandler.Views.Modals
             if (info.Error.Code > 299)
             {
                 txInfo.Text = info.Error.Message;
+                ErrorHandler.Warning(info.Error.Message);
             }
             else
             {
@@ -71,6 +72,7 @@ namespace RetroGameHandler.Views.Modals
             if (info.Error.Code > 299)
             {
                 txInfo.Text = info.Error.Message;
+                ErrorHandler.Warning(info.Error.Message);
             }
             else
             {
@@ -96,6 +98,7 @@ namespace RetroGameHandler.Views.Modals
                 data.ScrapEmail = email.Text;
                 LiteDBHelper.Save(data);
                 this.DialogResult = true;
+                ErrorHandler.Info(info.Error.Message);
                 MessageBox.Show(info.Error.Message, "info", MessageBoxButton.OK, MessageBoxImage.Information);
                 Close();
             }
@@ -120,7 +123,7 @@ namespace RetroGameHandler.Views.Modals
             {
                 data.ScrapGuid = info.Guid;
                 data.ScrapEmail = email.Text;
-
+                ErrorHandler.Info(info.Error.Message);
                 LiteDBHelper.Save(data);
                 MessageBox.Show(info.Error.Message, "Result", MessageBoxButton.OK, MessageBoxImage.Information);
                 this.DialogResult = true;

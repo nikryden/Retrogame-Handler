@@ -12,20 +12,28 @@ namespace RetroGameHandler.Helpers
     {
         public Dictionary<string, List<string>> BuildFolderStructure()
         {
-            var list = TheGamesDbHandler.PlatformModels;
-            var dictionary = new Dictionary<string, List<string>>();
-            foreach (var itm in list)
+            try
             {
-                if (dictionary.ContainsKey(itm.Developer))
+                var list = TheGamesDbHandler.PlatformModels;
+                var dictionary = new Dictionary<string, List<string>>();
+                foreach (var itm in list)
                 {
-                    dictionary[itm.Developer].Add(itm.Name);
+                    if (dictionary.ContainsKey(itm.Developer))
+                    {
+                        dictionary[itm.Developer].Add(itm.Name);
+                    }
+                    else
+                    {
+                        dictionary.Add(itm.Developer, new List<string>() { itm.Name });
+                    }
                 }
-                else
-                {
-                    dictionary.Add(itm.Developer, new List<string>() { itm.Name });
-                }
+                return dictionary;
             }
-            return dictionary;
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                throw;
+            }
         }
 
         private string shortName(string name)

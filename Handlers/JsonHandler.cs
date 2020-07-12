@@ -29,18 +29,17 @@ namespace RetroGameHandler.Handlers
                 {
                     if (retry <= 3)
                     {
+                        ErrorHandler.Debug(ex.ToString());
                         return DownloadSerializedJsonData<T>(url, headers, retry + 1);
                     }
                     else
                     {
-                        Console.WriteLine(ex);
                         using (StreamReader r = new StreamReader(ex.Response.GetResponseStream()))
                         {
                             json_data = r.ReadToEnd();
-                            System.Windows.MessageBox.Show(ex.Message, "Error!", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-                            // ... do whatever ...
+                            ErrorHandler.Error(json_data, Entities.ErrorLevel.ERROR, ex.ToString(), ex.StackTrace);
                         }
-
+                        System.Windows.MessageBox.Show(ex.Message, "Error!", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                         //return !string.IsNullOrEmpty(json_data) ? JsonConvert.DeserializeObject<T>(json_data) : new T();
                         return new T();
                     }

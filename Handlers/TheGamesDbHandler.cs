@@ -1,19 +1,13 @@
 ﻿using RetroGameHandler.Entities;
 using RetroGameHandler.models;
-using RetroGameHandler.thegamesAPI;
-using RetroGameHandler.thegamesdbModel;
 using RetroGameHandler.TimeOnline;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net;
-using System.Net.NetworkInformation;
-using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -33,32 +27,48 @@ namespace RetroGameHandler.Handlers
 
         public async static Task<GameRoot> GetGame(string gameName, int platformId, bool useDirectory, string token)
         {
-            gameName = CleanGameName(gameName, useDirectory);
-            if (string.IsNullOrWhiteSpace(gameName)) return new GameRoot();
-            var path = RGHSettings.ScrapPath + $@"game/{platformId}/{gameName}";
-            var headers = new Dictionary<string, string>();
+            try
+            {
+                gameName = CleanGameName(gameName, useDirectory);
+                if (string.IsNullOrWhiteSpace(gameName)) return new GameRoot();
+                var path = RGHSettings.ScrapPath + $@"game/{platformId}/{gameName}";
+                var headers = new Dictionary<string, string>();
 
-            headers.Add("token", token);
-            headers.Add("secret", RGHSettings.ProgGuid);
-            return await Task.Run(() => JsonHandler.DownloadSerializedJsonData<GameRoot>(path, headers));
+                headers.Add("token", token);
+                headers.Add("secret", RGHSettings.ProgGuid);
+                return await Task.Run(() => JsonHandler.DownloadSerializedJsonData<GameRoot>(path, headers));
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                throw;
+            }
         }
 
         public static string GetMACAddress()
         {
-            ManagementClass mc = new ManagementClass("Win32_NetworkAdapterConfiguration");
-            ManagementObjectCollection moc = mc.GetInstances();
-            string MACAddress = String.Empty;
-            foreach (ManagementObject mo in moc)
+            try
             {
-                if (MACAddress == String.Empty)
+                ManagementClass mc = new ManagementClass("Win32_NetworkAdapterConfiguration");
+                ManagementObjectCollection moc = mc.GetInstances();
+                string MACAddress = String.Empty;
+                foreach (ManagementObject mo in moc)
                 {
-                    if ((bool)mo["IPEnabled"] == true) MACAddress = mo["MacAddress"].ToString();
+                    if (MACAddress == String.Empty)
+                    {
+                        if ((bool)mo["IPEnabled"] == true) MACAddress = mo["MacAddress"].ToString();
+                    }
+                    mo.Dispose();
                 }
-                mo.Dispose();
-            }
 
-            MACAddress = MACAddress.Replace(":", "");
-            return MACAddress;
+                MACAddress = MACAddress.Replace(":", "");
+                return MACAddress;
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                throw;
+            }
         }
 
         //public static string GetMACAddress()
@@ -137,17 +147,25 @@ namespace RetroGameHandler.Handlers
 
         public static string CleanGameName(string gameName, bool useDirectory)
         {
-            gameName = Regex.Replace(gameName, @"\([^()]*\)", string.Empty);
-            gameName = Regex.Replace(gameName, @"\[[^()]*\]", string.Empty);
-            RegexOptions options = RegexOptions.None;
-            Regex regex = new Regex("[ ]{2,}", options);
-            gameName = regex.Replace(gameName, " ");
-            //gameName = Regex.Replace(gameName, "[ ]{ 2,}", " ");
-            //gameName = Regex.Replace(gameName, " {2,}", "%");
-            gameName = AddSpacesBeforeUpperCase(gameName);
-            gameName = gameName.Replace("&", "%26");
-            if (!useDirectory) gameName = System.IO.Path.GetFileNameWithoutExtension(gameName).Trim();
-            return gameName;
+            try
+            {
+                gameName = Regex.Replace(gameName, @"\([^()]*\)", string.Empty);
+                gameName = Regex.Replace(gameName, @"\[[^()]*\]", string.Empty);
+                RegexOptions options = RegexOptions.None;
+                Regex regex = new Regex("[ ]{2,}", options);
+                gameName = regex.Replace(gameName, " ");
+                //gameName = Regex.Replace(gameName, "[ ]{ 2,}", " ");
+                //gameName = Regex.Replace(gameName, " {2,}", "%");
+                gameName = AddSpacesBeforeUpperCase(gameName);
+                gameName = gameName.Replace("&", "%26");
+                if (!useDirectory) gameName = System.IO.Path.GetFileNameWithoutExtension(gameName).Trim();
+                return gameName;
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                throw;
+            }
         }
 
         public static string AddSpacesBeforeUpperCase(string nonSpacedString)
@@ -207,77 +225,94 @@ namespace RetroGameHandler.Handlers
 
         public async static void init()
         {
-            Mac = GetMACAddress();
-
-            #region Platforms
-
-            var dataEntity = LiteDBHelper.Load<DataModel>().FirstOrDefault() ?? new DataModel() { Id = 1, ScrapGuid = "", ScrapEmail = "" };
-            //var burl = await GetGame("¤", 1, false, dataEntity.ScrapGuid);
-            //BaseUrls = burl.BaseUrls;
-
-            var tmp = await LiteDBHelper.LoadAsync<PlatformResponse>();
-            platforms = tmp.FirstOrDefault()?.data.Platforms.Select(p => p.Value) ?? null;
-            Dictionary<int, List<string>> extensions;
-            extensions = await Task.Run(() => JsonHandler.DownloadSerializedJsonData<EmuExtensionsEntity>("http://timeonline.se/RGHandler/EmulatorSupportList.json").Extensions.ToDictionary(em => em.id, em => em.extensoins));
-            if (platforms == null)
+            try
             {
-                PlatformResponse p = null;
-                await Task.Run(() => p = JsonHandler.DownloadSerializedJsonData<PlatformResponse>(PlatformApiPath));
+                Mac = GetMACAddress();
 
-                if (p != null)
+                #region Platforms
+
+                var dataEntity = LiteDBHelper.Load<DataModel>().FirstOrDefault() ?? new DataModel() { Id = 1, ScrapGuid = "", ScrapEmail = "" };
+                //var burl = await GetGame("¤", 1, false, dataEntity.ScrapGuid);
+                //BaseUrls = burl.BaseUrls;
+
+                var tmp = await LiteDBHelper.LoadAsync<PlatformResponse>();
+                platforms = tmp.FirstOrDefault()?.data.Platforms.Select(p => p.Value) ?? null;
+                Dictionary<int, List<string>> extensions;
+                extensions = await Task.Run(() => JsonHandler.DownloadSerializedJsonData<EmuExtensionsEntity>("http://timeonline.se/RGHandler/EmulatorSupportList.json").Extensions.ToDictionary(em => em.id, em => em.extensoins));
+                if (platforms == null)
                 {
-                    await Task.Run(() =>
-                    {
-                        platforms = p.data?.Platforms?.Select(i => i.Value);
+                    PlatformResponse p = null;
+                    await Task.Run(() => p = JsonHandler.DownloadSerializedJsonData<PlatformResponse>(PlatformApiPath));
 
-                        foreach (var pl in platforms)
+                    if (p != null)
+                    {
+                        await Task.Run(() =>
                         {
-                            pl.Extensions = extensions.ContainsKey(pl.Id) && !extensions[pl.Id].Any(s => s == "?") ? extensions[pl.Id] : new List<string>();
-                            var icon = pl.Icon;
-                            var url = PlatformImagePath + icon;
-                            using (WebClient client = new WebClient())
+                            platforms = p.data?.Platforms?.Select(i => i.Value);
+
+                            foreach (var pl in platforms)
                             {
-                                byte[] data = client.DownloadData(url);
-                                using (MemoryStream mem = new MemoryStream(data))
+                                pl.Extensions = extensions.ContainsKey(pl.Id) && !extensions[pl.Id].Any(s => s == "?") ? extensions[pl.Id] : new List<string>();
+                                var icon = pl.Icon;
+                                var url = PlatformImagePath + icon;
+                                using (WebClient client = new WebClient())
                                 {
-                                    LiteDBHelper.SaveFile("platform/images", icon, mem);
+                                    byte[] data = client.DownloadData(url);
+                                    using (MemoryStream mem = new MemoryStream(data))
+                                    {
+                                        LiteDBHelper.SaveFile("platform/images", icon, mem);
+                                    }
                                 }
                             }
-                        }
-                    });
-                    LiteDBHelper.Save(p);
+                        });
+                        LiteDBHelper.Save(p);
+                    }
                 }
-            }
-            else
-            {
-                foreach (var pl in platforms) pl.Extensions = extensions.ContainsKey(pl.Id) && !extensions[pl.Id].Any(s => s == "?") ? extensions[pl.Id] : new List<string>();
-            }
-
-            foreach (var pl in platforms)
-            {
-                using (MemoryStream mem = new MemoryStream())
+                else
                 {
-                    LiteDBHelper.LoadFile("platform/images", pl.Icon, mem);
-                    PlatformModels.Add(new PlatformModel(pl, LoadImage(mem)));
+                    foreach (var pl in platforms) pl.Extensions = extensions.ContainsKey(pl.Id) && !extensions[pl.Id].Any(s => s == "?") ? extensions[pl.Id] : new List<string>();
                 }
-            }
 
-            #endregion Platforms
+                foreach (var pl in platforms)
+                {
+                    using (MemoryStream mem = new MemoryStream())
+                    {
+                        LiteDBHelper.LoadFile("platform/images", pl.Icon, mem);
+                        PlatformModels.Add(new PlatformModel(pl, LoadImage(mem)));
+                    }
+                }
+
+                #endregion Platforms
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                throw;
+            }
         }
 
-        private static BitmapImage LoadImage(Stream stream)
+        public static BitmapImage LoadImage(Stream stream)
         {
-            // assumes that the streams position is at the beginning
-            // for example if you use a memory stream you might need to point it to 0 first
-            var image = new BitmapImage();
+            try
+            {
+                stream.Position = 0;
+                // assumes that the streams position is at the beginning
+                // for example if you use a memory stream you might need to point it to 0 first
+                var image = new BitmapImage();
 
-            image.BeginInit();
-            image.CacheOption = BitmapCacheOption.OnLoad;
-            image.StreamSource = stream;
-            image.EndInit();
+                image.BeginInit();
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.StreamSource = stream;
+                image.EndInit();
 
-            image.Freeze();
-            return image;
+                image.Freeze();
+                return image;
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                throw;
+            }
         }
 
         public static void FindGame(string searchString, int platformId)

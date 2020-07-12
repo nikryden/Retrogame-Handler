@@ -25,26 +25,42 @@ namespace RetroGameHandler.Handlers
 
         public Games GetGameByName(string name)
         {
-            var client = new RestClient("https://api.thegamesdb.net/v1.1/Games/ByGameName");
-            RestRequest request = new RestRequest(Method.GET);
-            request.AddParameter("apikey", APIKey);
-            request.AddParameter("name", name);
-            request.AddParameter("include", "boxart,platform");
-            request.AddHeader("Content-Type", "application/json");
-            var response = client.Execute(request);
-            return JsonConvert.DeserializeObject<Games>(response.Content);
+            try
+            {
+                var client = new RestClient("https://api.thegamesdb.net/v1.1/Games/ByGameName");
+                RestRequest request = new RestRequest(Method.GET);
+                request.AddParameter("apikey", APIKey);
+                request.AddParameter("name", name);
+                request.AddParameter("include", "boxart,platform");
+                request.AddHeader("Content-Type", "application/json");
+                var response = client.Execute(request);
+                return JsonConvert.DeserializeObject<Games>(response.Content);
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                throw;
+            }
         }
 
         public Images GetGameImage(long id)
         {
-            var client = new RestClient("https://api.thegamesdb.net/v1/Games/Images");
-            RestRequest request = new RestRequest(Method.GET);
-            request.AddParameter("apikey", APIKey);
-            request.AddParameter("games_id", id);
+            try
+            {
+                var client = new RestClient("https://api.thegamesdb.net/v1/Games/Images");
+                RestRequest request = new RestRequest(Method.GET);
+                request.AddParameter("apikey", APIKey);
+                request.AddParameter("games_id", id);
 
-            request.AddHeader("Content-Type", "application/json");
-            var response = client.Execute(request);
-            return JsonConvert.DeserializeObject<Images>(response.Content);
+                request.AddHeader("Content-Type", "application/json");
+                var response = client.Execute(request);
+                return JsonConvert.DeserializeObject<Images>(response.Content);
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                throw;
+            }
         }
 
         public void GetConsoleList()
@@ -79,6 +95,7 @@ namespace RetroGameHandler.Handlers
 
             if (response.ErrorException != null)
             {
+                ErrorHandler.Error(response.ErrorException);
                 const string message = "Error retrieving response.  Check inner details for more info.";
                 var browserStackException = new ApplicationException(message, response.ErrorException);
                 throw browserStackException;
@@ -92,45 +109,53 @@ namespace RetroGameHandler.Handlers
         //objectType is the type as specified for List<myModel> (i.e. myModel)
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var token = JToken.Load(reader); //json from myModelList > model
-            var list = Activator.CreateInstance(objectType) as System.Collections.IList; // new list to return
-            var itemType = objectType.GenericTypeArguments[0]; // type of the list (myModel)
-            if (token.Type.ToString() == "Object") //Object
+            try
             {
-                var child = token.Children();
-                var n = child.AsJEnumerable();
-                foreach (var s in n)
+                var token = JToken.Load(reader); //json from myModelList > model
+                var list = Activator.CreateInstance(objectType) as System.Collections.IList; // new list to return
+                var itemType = objectType.GenericTypeArguments[0]; // type of the list (myModel)
+                if (token.Type.ToString() == "Object") //Object
                 {
-                    var x = s.Children();
-                    foreach (var t in x)
+                    var child = token.Children();
+                    var n = child.AsJEnumerable();
+                    foreach (var s in n)
                     {
-                        var newObject = Activator.CreateInstance(itemType);
-                        if (t.Type == JTokenType.Array)
+                        var x = s.Children();
+                        foreach (var t in x)
                         {
-                            foreach (var c in t.Children())
+                            var newObject = Activator.CreateInstance(itemType);
+                            if (t.Type == JTokenType.Array)
                             {
-                                serializer.Populate(c.CreateReader(), newObject);
+                                foreach (var c in t.Children())
+                                {
+                                    serializer.Populate(c.CreateReader(), newObject);
+                                    list.Add(newObject);
+                                }
+                            }
+                            else
+                            {
+                                serializer.Populate(t.CreateReader(), newObject);
                                 list.Add(newObject);
                             }
                         }
-                        else
-                        {
-                            serializer.Populate(t.CreateReader(), newObject);
-                            list.Add(newObject);
-                        }
                     }
                 }
-            }
-            else //Array
-            {
-                foreach (var child in token.Children())
+                else //Array
                 {
-                    var newObject = Activator.CreateInstance(itemType);
-                    serializer.Populate(child.CreateReader(), newObject);
-                    list.Add(newObject);
+                    foreach (var child in token.Children())
+                    {
+                        var newObject = Activator.CreateInstance(itemType);
+                        serializer.Populate(child.CreateReader(), newObject);
+                        list.Add(newObject);
+                    }
                 }
+                return list;
             }
-            return list;
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                throw;
+            }
         }
 
         public override bool CanConvert(Type objectType)

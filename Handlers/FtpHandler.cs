@@ -145,25 +145,70 @@ namespace RetroGameHandler.Handlers
             GC.SuppressFinalize(this);
         }
 
-        public string DownloadFile(string path, string name, bool overwrightIfExists = true)
+        public async Task<IList<FtpResult>> DownloadDirectoryAsync(string remotePath, string localPath, CancellationToken cancellationToken, Progress<FtpProgress> progress, FtpFolderSyncMode SyncMode = FtpFolderSyncMode.Update)
         {
-            var path2 = path.Replace("/", @"\").Replace(@"\.", "").Substring(1);
-            path2 = Path.Combine("TimeOnline", path2.Substring(0, path2.LastIndexOf(@"\")));
-            var tmpPath = Path.Combine(Path.GetTempPath(), path2);
-            if (!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
-            var xpath = Path.Combine(tmpPath, name);
-            if (!overwrightIfExists && File.Exists(xpath)) return xpath;
-            var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
-            using (var clientConnect2 = new FtpClient())
+            try
             {
-                clientConnect2.Host = RGHSett.FtpHost;
-                clientConnect2.Connect();
-                var cl = clientConnect2.DownloadFile(xpath, path);
+                //if (!overwrightIfExists && File.Exists(localPath)) return new List<FtpResult>();
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    clientConnect2.Connect();
+                    var cl = await clientConnect2.DownloadDirectoryAsync(localPath, remotePath, SyncMode, FtpLocalExists.Append, FtpVerify.Retry, null, progress, cancellationToken);
+                    return cl;
+                }
             }
-            return xpath;
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                return new List<FtpResult>();
+            }
         }
 
-        public void DownloadStream(string path, Stream outStream)
+        public async Task<FtpStatus> DownloadFileAsync(string remotePath, string localPath, CancellationToken cancellationToken, Progress<FtpProgress> progress)
+        {
+            try
+            {
+                //if (!overwrightIfExists && File.Exists(localPath)) return new List<FtpResult>();
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    clientConnect2.Connect();
+                    var cl = await clientConnect2.DownloadFileAsync(localPath, remotePath, FtpLocalExists.Append, FtpVerify.Retry, progress, cancellationToken);
+                    return cl;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                return FtpStatus.Failed;
+            }
+        }
+
+        public string DownloadFile(string remotePath, string localPath, bool overwrightIfExists = true)
+        {
+            try
+            {
+                if (!overwrightIfExists && File.Exists(localPath)) return localPath;
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    clientConnect2.Connect();
+                    var cl = clientConnect2.DownloadFile(localPath, remotePath);
+                }
+                return localPath;
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                return localPath;
+            }
+        }
+
+        public bool DownloadStream(string path, Stream outStream)
         {
             try
             {
@@ -172,12 +217,14 @@ namespace RetroGameHandler.Handlers
                 {
                     clientConnect2.Host = RGHSett.FtpHost;
                     clientConnect2.Connect();
-                    var cl = clientConnect2.Download(outStream, path);
+                    return clientConnect2.Download(outStream, path);
                 }
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
+                return false;
             }
         }
 
@@ -206,6 +253,7 @@ namespace RetroGameHandler.Handlers
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
                 return false;
             }
@@ -260,6 +308,7 @@ namespace RetroGameHandler.Handlers
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
                 throw;
             }
@@ -294,14 +343,70 @@ namespace RetroGameHandler.Handlers
                     await clientConnect2.AutoConnectAsync();
                     await clientConnect2.DeleteFileAsync(remotePath, cancellationToken);
                 }
-
-                var path2 = remotePath.Replace("/", @"\").Replace(@"\.", "").Substring(1);
-                path2 = Path.Combine("TimeOnline", path2);
-                var tmpPath = Path.Combine(Path.GetTempPath(), path2);
-                if (File.Exists(tmpPath)) File.Delete(tmpPath);
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        public async Task RenameDirectory(string fromPath, string toPath, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    await clientConnect2.AutoConnectAsync();
+                    await clientConnect2.MoveDirectoryAsync(fromPath, toPath, FtpRemoteExists.Overwrite, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        public async Task RenameFile(string fromPath, string toPath, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    await clientConnect2.AutoConnectAsync();
+                    await clientConnect2.MoveFileAsync(fromPath, toPath, FtpRemoteExists.Overwrite, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        public async Task DeleteDirectoryAsync(string remotePath, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    await clientConnect2.AutoConnectAsync();
+                    await clientConnect2.DeleteDirectoryAsync(remotePath, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
                 throw;
             }
@@ -346,6 +451,7 @@ namespace RetroGameHandler.Handlers
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
                 return new List<FtpListItem>();
             }

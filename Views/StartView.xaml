@@ -37,6 +37,7 @@
                         <RowDefinition Height="6*" />
                         <RowDefinition Height="80" />
                         <RowDefinition Height="7*" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" />
@@ -114,16 +115,47 @@
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
+                <StackPanel Margin="0,10,0,0" Grid.Column="1" Grid.Row="3" x:Name="UploadProgress" Orientation="Vertical" Visibility="Collapsed">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <ProgressBar Height="10" Value="{Binding Progress}" Width="130" />
+                            <Button x:Name="CanclUpload"
+                                     Margin="0,1,1,0"
+                                     Padding="2"
+                                     Height="14"
+                                     Click="CanclUpload_Click"
+                                     ToolTip="Cancel progress">
+                                <fa:ImageAwesome Icon="Close" Width="8" Height="8" />
+                            </Button>
+                        </StackPanel>
+                        <TextBlock Grid.Column="1">
+                                    <TextBlock Text="{Binding Progress}" Margin="2,0,0,0" />
+                                    <TextBlock Text="%" />
+                                    <TextBlock Text="{Binding TransferredBytes,Converter={StaticResource ByteSizeConverter}}" Margin="2,0" />
+                                </TextBlock>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" Margin="0,1">
+                        <TextBlock Text="{Binding FileIndex}" FontSize="8" VerticalAlignment="Bottom" />
+                        <TextBlock Text="/" FontSize="8"  VerticalAlignment="Bottom" />
+                        <TextBlock Text="{Binding FileCount}" FontSize="8" VerticalAlignment="Bottom" />
+                        <TextBlock Text="EAT" Margin="2,0"  FontSize="8" VerticalAlignment="Bottom" />
+                        <TextBlock Text="{Binding EAT}"  FontSize="8" VerticalAlignment="Bottom" />
+                        <TextBlock Text="(hh:mm:ss)" Margin="2,0" FontSize="8" VerticalAlignment="Bottom" />
+                        <TextBlock Text="Speed" Margin="2,0"  FontSize="8" VerticalAlignment="Bottom" />
+                        <TextBlock Text="{Binding TransferSpeedString}"  FontSize="8" VerticalAlignment="Bottom" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="{Binding TransMessage}" FontSize="8" Margin="2,0" Height="40" TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
-
-            <!--<Image  Grid.Row="1" Source="../Images/TimeOnline.ico" />
-            <TextBlock Grid.Row="1" Text="Retro Console handler" Margin="23,38" FontFamily="verdana" FontSize="14" FontWeight="Black" Foreground="Black" />
-            <TextBlock Grid.Row="1" Text="Retro Console handler" Margin="20,35" FontFamily="verdana" FontSize="14" FontWeight="Black" Foreground="Gainsboro" />
-            <TextBlock Grid.Row="1" Text="TimeOnline.se" Margin="108,82,0,0" FontFamily="verdana" FontSize="10" FontWeight="Black" Foreground="Black" />
-            <TextBlock Grid.Row="1" Text="TimeOnline.se" Margin="106,80,0,0" FontFamily="verdana" FontSize="10" FontWeight="Black" Foreground="LightCoral" />-->
         </Grid>
 
-        <TreeView x:Name="FileList" Grid.Column="1" ItemsSource="{Binding FtpListItems}"
+        <TreeView x:Name="FileList" Grid.Column="1" ItemsSource="{Binding FtpListItems}" SelectedItemChanged="FileList_SelectedItemChanged_1"
                   TreeViewItem.Expanded="TreeView_Expanded" Foreground="White" Background="#2c2c2c">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type self:FtpListItemModel}" ItemsSource="{Binding Items}">
@@ -137,46 +169,51 @@
                     <Grid>
 
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="14*" />
                             <RowDefinition Height="2*" />
+                            <RowDefinition Height="10*" />
+                            <RowDefinition Height="3*" />
                             <RowDefinition Height="3*" />
                         </Grid.RowDefinitions>
-                        <StackPanel Orientation="Horizontal" Grid.Column="0">
+                        <StackPanel Orientation="Horizontal">
                             <fa:ImageAwesome Icon="FolderOutlinepenOutline" Width="20" Height="20"  Margin="0,10,5,0" VerticalAlignment="Top" Foreground="White" />
-                            <TextBlock Text="{Binding Name}" Margin="0,12,5,0"  TextWrapping="Wrap"  Height="150" VerticalAlignment="Top" Width="165" />
+                            <TextBlock Text="{Binding Name}" Margin="0,12,5,0"  TextWrapping="Wrap"  Height="150" VerticalAlignment="Top" Width="190" />
                             <TextBlock Text="{Binding mSize,Converter={StaticResource ByteSizeConverter}}" Margin="0,12,5,0"  VerticalAlignment="Top" />
+                            <Button ToolTip="Copy path to clipboard"
+                                x:Name="btnCopyFullPath1"
+                                     Margin="0,5,5,0"
+                                     Padding="2"
+                                     Height="24"
+                                     Click="btnCopyPath_Click">
+                                <fa:ImageAwesome Icon="Copy" Height="16" Foreground="Black" />
+                            </Button>
                         </StackPanel>
-                        <Grid Grid.Column="0" Grid.Row="1">
-                            <TextBlock Text="{Binding mFullName}" Margin="0" FontStyle="Oblique" Foreground="CadetBlue" TextDecorations="Underline" TextWrapping="Wrap"  Height="40" VerticalAlignment="Top" Padding="5,2" />
-                        </Grid>
-                        <StackPanel Grid.Column="1" Grid.Row="2" x:Name="UploadProgress" Orientation="Vertical" Visibility="Collapsed">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="3*" />
-                                    <ColumnDefinition Width="2*" />
-                                </Grid.ColumnDefinitions>
-                                <ProgressBar Height="10" Value="{Binding Progress}" />
-                                <TextBlock Grid.Column="1">
-                                    <TextBlock Text="{Binding Progress}" Margin="2,0,0,0" />
-                                    <TextBlock Text="%" />
-                                    <TextBlock Text="{Binding TransferredBytes,Converter={StaticResource ByteSizeConverter}}" Margin="2,0" />
-                                </TextBlock>
-                            </Grid>
-                            <StackPanel Orientation="Horizontal" Margin="0,1">
-                                <TextBlock Text="{Binding FileIndex}" FontSize="8" VerticalAlignment="Bottom" />
-                                <TextBlock Text="/" FontSize="8"  VerticalAlignment="Bottom" />
-                                <TextBlock Text="{Binding FileCount}" FontSize="8" VerticalAlignment="Bottom" />
-                                <TextBlock Text="EAT" Margin="2,0"  FontSize="8" VerticalAlignment="Bottom" />
-                                <TextBlock Text="{Binding EAT}"  FontSize="8" VerticalAlignment="Bottom" />
-                                <TextBlock Text="(hh:mm:ss)" Margin="2,0" FontSize="8" VerticalAlignment="Bottom" />
-                                <TextBlock Text="Speed" Margin="2,0"  FontSize="8" VerticalAlignment="Bottom" />
-                                <TextBlock Text="{Binding TransferSpeedString}"  FontSize="8" VerticalAlignment="Bottom" />
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock Text="{Binding TransMessage}" FontSize="8" Margin="2,0" Height="40" TextWrapping="Wrap" />
+                        <StackPanel x:Name="DirectoryActionMenue" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+                            <!--<TextBlock x:Name="txtDirectoryRename"  Text="{Binding mFullName}" Margin="0" FontStyle="Oblique" Foreground="CadetBlue" TextDecorations="Underline" TextWrapping="Wrap"  Height="40" VerticalAlignment="Top" Padding="5,2" />-->
+                            <StackPanel x:Name="spDirectoryRename" Orientation="Horizontal" Visibility="Collapsed">
+                                <TextBox Width="200" Text="{Binding Name}" />
+                                <Button
+                                    x:Name="DirectoryRenameClose"
+                                    Click="DirectoryRenameClose_Click"
+                                     Padding="2"
+                                     Background="White"
+                                    BorderBrush="White"
+                                     Height="23"
+                                    ToolTip="Cancel Rename">
+                                    <fa:ImageAwesome Icon="Close" Height="10" Foreground="Black" />
+                                </Button>
+                                <Button
+                                    x:Name="DirectorySaveRename"
+                                    Click="DirectorySaveRename_Click"
+                                    Padding="2"
+                                    Margin="5,0,0,0"
+                                    Height="24"
+                                    ToolTip="Save change">
+                                    <fa:ImageAwesome Icon="Save" Height="16" Foreground="Black" />
+                                </Button>
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+
+                        <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                             <Button x:Name="ScrapeFolder"
                                      Margin="0,5,5,0"
                                      Padding="2"
@@ -185,7 +222,22 @@
                                      ToolTip="Scrape folder for game images">
                                 <fa:ImageAwesome Icon="Image" Width="18" Height="18" />
                             </Button>
-
+                            <Button x:Name="RenameFolder"
+                                     Margin="0,5,5,0"
+                                     Padding="2"
+                                     Height="24"
+                                     Click="RenameFolder_Click"
+                                     ToolTip="Rename folder">
+                                <fa:ImageAwesome Icon="Pencil" Width="18" Height="18" />
+                            </Button>
+                            <Button x:Name="DownloadFolder"
+                                     Margin="0,5,5,0"
+                                     Padding="2"
+                                     Height="24"
+                                     Click="DownloadFolder_Click"
+                                     ToolTip="Download folder to local">
+                                <fa:ImageAwesome Icon="Download" Width="18" Height="18" />
+                            </Button>
                             <Button x:Name="UpladFile"
                                      Margin="0,5,5,0"
                                      Padding="2"
@@ -194,6 +246,15 @@
                                      ToolTip="Upload file/s to directory on console">
                                 <fa:ImageAwesome Icon="Upload" Width="18" Height="18" />
                             </Button>
+                            <Button x:Name="DeleteFolder"
+                                     Margin="0,5,5,0"
+                                     Padding="2"
+                                     Height="24"
+                                     Click="DeleteFile_Click"
+                                     ToolTip="Delete folder on console">
+                                <fa:ImageAwesome Icon="TrashOutline" Width="18" Height="18" />
+                            </Button>
+
                             <!--<Button  Margin="0,5,5,0" Padding="2" x:Name="DownLoadFile"  Height="24" ToolTip="Download file from console">
                                 <fa:ImageAwesome Icon="Download" Width="18" Height="18" />
                             </Button>-->
@@ -203,21 +264,89 @@
                 <Grid  Margin="3" Visibility="{Binding IsFile,Converter={StaticResource VisibleIfTrueConverter}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" />
-                        <RowDefinition Height="15*" />
+                        <RowDefinition Height="10*" />
                         <RowDefinition Height="3*" />
-                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="3*" />
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal">
                         <fa:ImageAwesome Icon="FileTextOutline" Width="20" Height="20"  Margin="0,10,5,0"  VerticalAlignment="Top" Foreground="White" />
                         <TextBlock Text="{Binding Name}" Margin="0,12,5,0" TextWrapping="Wrap"  Height="150" VerticalAlignment="Top" Width="190" />
                         <TextBlock Text="{Binding mSize,Converter={StaticResource ByteSizeConverter}}" Margin="0,12,5,0" />
+                        <Button ToolTip="Copy path to clipboard"
+                                x:Name="btnCopyFullPath"
+                                     Margin="0,5,5,0"
+                                     Padding="2"
+                                     Height="24"
+                                     Click="btnCopyPath_Click">
+                            <fa:ImageAwesome Icon="Copy" Height="16" Foreground="Black" />
+                        </Button>
                     </StackPanel>
                     <Image Source="{Binding Image}" MaxWidth="320" MaxHeight="240" Grid.Row="1"  HorizontalAlignment="Left" Visibility="{Binding IsImage,Converter={StaticResource VisibleIfTrueConverter}}" />
-                    <Grid Grid.Column="0" Grid.Row="2">
+                    <StackPanel Orientation="Vertical" Margin="0,10" Grid.Row="1" Visibility="{Binding IsOpk,Converter={StaticResource VisibleIfTrueConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image x:Name="opkImage" Width="16" />
+                            <TextBlock x:Name="opkName" Margin="10,0" FontWeight="Bold" />
+                        </StackPanel>
 
-                        <TextBlock Text="{Binding mFullName}" Margin="0" FontStyle="Oblique" Foreground="CadetBlue" TextDecorations="Underline" TextWrapping="Wrap"  Height="50" VerticalAlignment="Top" Padding="5,2" />
-                    </Grid>
-                    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                        <TextBlock x:Name="opkType" />
+                        <TextBlock x:Name="opkComment" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+                        <TextBlock Background="Transparent" Text="{Binding mFullName, Mode=OneWay}" Margin="0" FontStyle="Oblique" Foreground="CadetBlue" TextDecorations="Underline" TextWrapping="Wrap"  Height="40" VerticalAlignment="Top" Padding="5,2" Visibility="Collapsed" />
+                        <StackPanel  x:Name="spFileRename" Orientation="Horizontal">
+                            <TextBox  Width="200" Text="{Binding Name}" />
+                            <Button
+                                    x:Name="FileRenameClose"
+                                    Click="FileRenameClose_Click"
+                                     Padding="2"
+                                     Background="White"
+                                    BorderBrush="White"
+                                     Height="23"
+                                    ToolTip="Cancel Rename">
+                                <fa:ImageAwesome Icon="Close" Height="10" Foreground="Black" />
+                            </Button>
+                            <Button
+                                    x:Name="FileSaveRename"
+                                    Click="FileSaveRename_Click"
+                                    Padding="2"
+                                    Margin="5,0,0,0"
+                                    Height="24"
+                                    ToolTip="Save change">
+                                <fa:ImageAwesome Icon="Save" Height="16" Foreground="Black" />
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!--<StackPanel Grid.Column="0" Grid.Row="2">
+                        <TextBlock Background="Transparent" Text="{Binding mFullName, Mode=OneWay}" Margin="0" FontStyle="Oblique" Foreground="CadetBlue" TextDecorations="Underline" TextWrapping="Wrap"  Height="50" VerticalAlignment="Top" Padding="5,2" />
+                    </StackPanel>-->
+                    <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                        <Button x:Name="RenameFile"
+                                     Margin="0,5,5,0"
+                                     Padding="2"
+                                     Height="24"
+                                     Click="RenameFile_Click"
+                                     ToolTip="Rename file">
+                            <fa:ImageAwesome Icon="Pencil" Width="18" Height="18" />
+                        </Button>
+                        <Button x:Name="Downloafile"
+                                     Margin="0,5,5,0"
+                                     Padding="2"
+                                     Height="24"
+                                     Click="Downloafile_Click"
+                                     ToolTip="Download file to local">
+                            <fa:ImageAwesome Icon="Download" Width="18" Height="18" />
+                        </Button>
+
+                        <Button x:Name="EditFile"
+                                     Margin="0,5,5,0"
+                                     Padding="2"
+                                     Height="24"
+                                     Click="EditFile_Click"
+                                     ToolTip="Edit file">
+                            <fa:ImageAwesome Icon="Edit" Width="18" Height="18" />
+                        </Button>
                         <Button x:Name="DeleteFile"
                                      Margin="0,5,5,0"
                                      Padding="2"
