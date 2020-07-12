@@ -145,22 +145,67 @@ namespace RetroGameHandler.Handlers
             GC.SuppressFinalize(this);
         }
 
-        public string DownloadFile(string path, string name, bool overwrightIfExists = true)
+        public async Task<IList<FtpResult>> DownloadDirectoryAsync(string remotePath, string localPath, CancellationToken cancellationToken, Progress<FtpProgress> progress, FtpFolderSyncMode SyncMode = FtpFolderSyncMode.Update)
         {
-            var path2 = path.Replace("/", @"\").Replace(@"\.", "").Substring(1);
-            path2 = Path.Combine("TimeOnline", path2.Substring(0, path2.LastIndexOf(@"\")));
-            var tmpPath = Path.Combine(Path.GetTempPath(), path2);
-            if (!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
-            var xpath = Path.Combine(tmpPath, name);
-            if (!overwrightIfExists && File.Exists(xpath)) return xpath;
-            var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
-            using (var clientConnect2 = new FtpClient())
+            try
             {
-                clientConnect2.Host = RGHSett.FtpHost;
-                clientConnect2.Connect();
-                var cl = clientConnect2.DownloadFile(xpath, path);
+                //if (!overwrightIfExists && File.Exists(localPath)) return new List<FtpResult>();
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    clientConnect2.Connect();
+                    var cl = await clientConnect2.DownloadDirectoryAsync(localPath, remotePath, SyncMode, FtpLocalExists.Append, FtpVerify.Retry, null, progress, cancellationToken);
+                    return cl;
+                }
             }
-            return xpath;
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                return new List<FtpResult>();
+            }
+        }
+
+        public async Task<FtpStatus> DownloadFileAsync(string remotePath, string localPath, CancellationToken cancellationToken, Progress<FtpProgress> progress)
+        {
+            try
+            {
+                //if (!overwrightIfExists && File.Exists(localPath)) return new List<FtpResult>();
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    clientConnect2.Connect();
+                    var cl = await clientConnect2.DownloadFileAsync(localPath, remotePath, FtpLocalExists.Append, FtpVerify.Retry, progress, cancellationToken);
+                    return cl;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                return FtpStatus.Failed;
+            }
+        }
+
+        public string DownloadFile(string remotePath, string localPath, bool overwrightIfExists = true)
+        {
+            try
+            {
+                if (!overwrightIfExists && File.Exists(localPath)) return localPath;
+                var RGHSett = RGHSettings.ProgramSetting.SelectedFtpSetting;
+                using (var clientConnect2 = new FtpClient())
+                {
+                    clientConnect2.Host = RGHSett.FtpHost;
+                    clientConnect2.Connect();
+                    var cl = clientConnect2.DownloadFile(localPath, remotePath);
+                }
+                return localPath;
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error(ex);
+                return localPath;
+            }
         }
 
         public bool DownloadStream(string path, Stream outStream)
@@ -263,6 +308,7 @@ namespace RetroGameHandler.Handlers
             }
             catch (Exception ex)
             {
+                ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
                 throw;
             }
