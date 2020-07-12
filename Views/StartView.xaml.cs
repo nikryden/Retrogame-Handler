@@ -477,6 +477,7 @@ namespace RetroGameHandler.Views
             //cancellationToken.ThrowIfCancellationRequested();
             cancellationTokenSource.Token.Register(() =>
             {
+                cancellationTokenSource.Dispose();
                 UploadProgress.Visibility = Visibility.Collapsed;
                 DirFileInfo.IsEnabled = true;
                 FileList.IsEnabled = true;
