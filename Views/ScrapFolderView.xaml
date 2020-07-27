@@ -7,9 +7,13 @@
              xmlns:local="clr-namespace:RetroGameHandler.Views"
              xmlns:qc="clr-namespace:RetroGameHandler.Converter"
              mc:Ignorable="d"
+             xmlns:cont="clr-namespace:RetroGameHandler.Controls"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <qc:VisibleIfTrueConverterInverted x:Key="VisibleIfTrueConverterInverted" />
+        <qc:VisibleIfNotZeroConverterInvert x:Key="VisibleIfNotZeroConverterInvert" />
+        <qc:ShowDownloadImageModelName x:Key="ShowDownloadImageModelName" />
+
         <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
 
         <Style TargetType="TextBlock" x:Key="LinkCharStyle">
@@ -38,7 +42,11 @@
             <TextBlock Text="Scrap folder:" Margin="0,0,5,0" FontWeight="Bold" />
             <TextBlock Text="{Binding FtpListItem.mFullName}" />
         </StackPanel>
-        <ComboBox SelectionChanged="ComboBox_SelectionChanged" Grid.Column="1" Height="24" VerticalAlignment="Top" ItemsSource="{Binding PlatformModels}" SelectedValue="{Binding SelectedPlatform}">
+        <ComboBox SelectionChanged="ComboBox_SelectionChanged"
+                  Grid.Column="1"
+                  Height="24"
+                  VerticalAlignment="Top"
+                  ItemsSource="{Binding PlatformModels}" SelectedValue="{Binding SelectedPlatform}" PreviewTextInput="ComboBox_PreviewTextInput">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -48,7 +56,7 @@
                             </Rectangle.Fill>
                         </Rectangle>
                         <TextBlock Text="{Binding Name}" Margin="5,0,0,0" />
-                        <TextBlock Text="{Binding Id}" Margin="5,0,0,0" />
+                        <!--<TextBlock Text="{Binding Id}" Margin="5,0,0,0" />-->
                     </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
@@ -56,7 +64,17 @@
 
         <StackPanel Grid.Column="2" Orientation="Vertical">
             <Button x:Name="btnScrap"  Content="Scrap" Click="btnScrap_Click" Margin="5,0,5,5" Height="24" FontSize="16" FontWeight="Bold" IsEnabled="False" />
-            <CheckBox x:Name="cbUseDirectory" Content="Use Directory name" Margin="2,5" Foreground="White" />
+            <StackPanel Orientation="Horizontal">
+                <CheckBox x:Name="cbUseDirectory"
+                          Content="Use Directory name"
+                          Margin="2,5"
+                          Foreground="White"
+                          ToolTip="Use the directoryname where the file is placed when search for games" />
+                <CheckBox x:Name="cbSkipExist"
+                       Content="Skip if exist"
+                       Margin="5,5" Foreground="White" IsChecked="True"
+                       ToolTip="Skip if images allready exists in media map on console" />
+            </StackPanel>
         </StackPanel>
 
         <StackPanel  x:Name="spPbScraping" Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" Visibility="Collapsed">
@@ -76,7 +94,7 @@
                                 <ColumnDefinition Width="150" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <RadioButton GroupName="{Binding Name}" IsChecked="{Binding IsSelected}" Visibility="{Binding  ShowCheckbox,Converter={StaticResource VisibleIfTrueConverter}}" />
+                            <cont:RadioButtonExt GroupName="{Binding Name}" IsChecked="{Binding IsSelected}" Visibility="{Binding  ShowCheckbox,Converter={StaticResource VisibleIfTrueConverter}}" />
                             <Rectangle Grid.Column="1" Margin="5,0" Width="120" Height="120" Visibility="{Binding  HasImage,Converter={StaticResource VisibleIfTrueConverter}}">
                                 <Rectangle.Fill>
                                     <ImageBrush ImageSource="{Binding Image.ImageSource}" />
@@ -93,7 +111,49 @@
                     <GroupStyle>
                         <GroupStyle.HeaderTemplate>
                             <DataTemplate>
-                                <TextBlock FontWeight="Bold" FontSize="14" Text="{Binding Name}" />
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold" FontSize="14" Text="{Binding Items,Converter={StaticResource ShowDownloadImageModelName}}" ToolTip="Right click for menu">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property= "Background" Value="White" />
+                                                <Style.Triggers>
+                                                    <Trigger Property ="IsMouseOver" Value="True">
+                                                        <Setter Property= "Background" Value="LightGray" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                        <TextBlock.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Change game file name"
+                                                          Click="MenuItem_Click"
+                                                          ToolTip="This will change the file name"
+                                                          Visibility="{Binding Items,Converter={StaticResource VisibleIfNotZeroConverterInvert}}">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Edit" Foreground="Black" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Manual search"
+                                                          Click="MenuItem_Click_Search"
+                                                          ToolTip="Manual enter search string">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Search" Foreground="Black" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Copy title to clipboard" Click="MenuItem_Click_Copy">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Copy" Foreground="Black" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Info" Click="MenuItem_Click_Info">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Info" Foreground="Black" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </TextBlock.ContextMenu>
+                                    </TextBlock>
+                                </StackPanel>
                             </DataTemplate>
                         </GroupStyle.HeaderTemplate>
                     </GroupStyle>

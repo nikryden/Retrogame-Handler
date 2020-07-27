@@ -300,6 +300,11 @@ namespace RetroGameHandler.Views
             var par = button.Parent;
             var ftpItmListM = (FtpListItemModel)button.DataContext;
             var oldFilePath = ftpItmListM.mFullName;
+            if (GeneralFunctions.IsFilenameInvalid(ftpItmListM.Name))
+            {
+                MessageBox.Show("Sorry Name Contains Invalid Chars!", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
             var newName = @"/" + ftpItmListM.Name;
             var newFileFullName = ftpItmListM.ParentPath + newName;
             if (MessageBox.Show($"You are about to rename {oldFilePath} to {newFileFullName}\nThis can damage the os or make applications unusable!\nSo if you are not sure what you are doing, please do not proceed!\nDo you like to proceed?", "Rename File?", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) return;
@@ -398,7 +403,7 @@ namespace RetroGameHandler.Views
                 });
                 UploadProgress.DataContext = ftpHelper;
                 cancellationTokenSource = new CancellationTokenSource();
-                var res = await ftpHelper.DownloadDirectoryAsync(ftpItmListM.FullName, path, cancellationTokenSource.Token, progress, FtpFolderSyncMode.Update);
+                var res = await ftpHelper.DownloadDirectoryAsync(ftpItmListM.FullName, path, cancellationTokenSource.Token, progress, FtpFolderSyncMode.Mirror);
                 //button.Visibility = Visibility.Visible;
                 UploadProgress.Visibility = Visibility.Collapsed;
                 DirFileInfo.IsEnabled = true;

@@ -24,26 +24,40 @@ namespace RetroGameHandler.models
             this.MultiImages = MultiImages;
             this.IsDirectoryName = useDirectory;
             DownloadPath = Url;
-            var tmpName = TheGamesDbHandler.CleanGameName(Name, useDirectory)
+            var tmpName = TheGamesDbHandler.CleanGameName(Name, true)
+                .Replace("&amp;", string.Empty)
                 .Replace("-", string.Empty)
                 .Replace("/", string.Empty)
                 .Replace(":", string.Empty)
+                .Replace(";", string.Empty)
+                .Replace("*", string.Empty)
                 .Replace("_", string.Empty)
                 .Replace(" ", string.Empty)
                 .Replace("'", string.Empty)
-                .Replace("&amp;", "&")
+                .Replace(".", string.Empty)
+                .Replace(",", string.Empty)
+                .Replace("%", string.Empty)
+                .Replace("The", string.Empty)
+                .Replace("!", string.Empty)
                 .Replace("é", "e");
             var tmpGameTitle = GameTitle
+                 .Replace("&amp;", string.Empty)
                 .Replace("-", string.Empty)
                 .Replace("/", string.Empty)
                 .Replace(":", string.Empty)
+                .Replace(";", string.Empty)
+                .Replace("*", string.Empty)
                 .Replace("_", string.Empty)
                 .Replace(" ", string.Empty)
                 .Replace("'", string.Empty)
-                .Replace("&amp;", "&")
+                .Replace(".", string.Empty)
+                .Replace(",", string.Empty)
+                .Replace("%", string.Empty)
+                .Replace("!", string.Empty)
+                .Replace("The", string.Empty)
                 .Replace("é", "e"); ;
-            IsSelected = tmpName.ToLower() == tmpGameTitle.ToLower();
-
+            IsSelected = tmpName.Trim().ToLower() == tmpGameTitle.Trim().ToLower();
+            //if (!IsSelected) IsSelected = tmpGameTitle.Trim().ToLower().Contains(tmpName.Trim().ToLower());
             //if (!string.IsNullOrWhiteSpace(Url))
             //{
             //    using (WebClient client = new WebClient())

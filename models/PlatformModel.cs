@@ -24,8 +24,11 @@ namespace RetroGameHandler.models
                 var itm = this.GetType().GetProperty(item.Name);
                 if (itm != null) itm.SetValue(this, item.GetValue(platformEntity));
             }
+            BitmapImage = bitmapImage;
             if (bitmapImage != null) Image = new ImageBrush(bitmapImage);
         }
+
+        public BitmapImage BitmapImage { get; }
 
         private int _id = 1;
         private string _name;

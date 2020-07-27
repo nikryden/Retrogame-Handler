@@ -1,0 +1,25 @@
+﻿<Window x:Class="RetroGameHandler.Views.Modals.RenameView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RetroGameHandler.Views.Modals"
+        mc:Ignorable="d"
+        Title="RenameView" Height="200" Width="500" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <StackPanel  Grid.Row="1" VerticalAlignment="Center" Orientation="Horizontal">
+            <TextBox x:Name="txbName"  Height="20" Width="400"  Margin="20,0,5,0" ></TextBox>
+            <TextBlock x:Name="txExtention"  Height="20" Margin="0,0,100,0" ></TextBlock>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
+            <Button x:Name="btnTest" Content="Search for game" Padding="10,0" Margin="10,10,50,10" Click="btnTest_Click" />
+            <Button x:Name="btnCancel" Content="Cancel" Padding="10,0" Margin="10,10" Click="btnCancel_Click" />
+            <Button x:Name="btnOk" Content="Ok" Padding="10,0" Margin="10,10" Click="btnOk_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

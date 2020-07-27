@@ -30,6 +30,7 @@ namespace RetroGameHandler.Handlers
                     if (retry <= 3)
                     {
                         ErrorHandler.Debug(ex.ToString());
+                        System.Threading.Thread.Sleep(10000);
                         return DownloadSerializedJsonData<T>(url, headers, retry + 1);
                     }
                     else
@@ -47,6 +48,7 @@ namespace RetroGameHandler.Handlers
                     //return new T();
                 }
                 // if string with JSON data is not empty, deserialize it to class and return its instance
+                System.Threading.Thread.Sleep(100);
                 return !string.IsNullOrEmpty(json_data) ? JsonConvert.DeserializeObject<T>(json_data) : new T();
             }
         }

@@ -19,9 +19,14 @@ namespace RetroGameHandler.Handlers
     {
         private static IEnumerable<PlatformEntity> platforms;
         public static ObservableCollection<PlatformModel> PlatformModels = new ObservableCollection<PlatformModel>();
+
         private static string PlatformImagePath { get; } = "https://cdn.thegamesdb.net/images/original/consoles/png48/";
+
         private static string ApiKey = "946f7777fa10bc47c4b5992ec16d646b1d4d7c0c7b9beb778d88534dd4c75278";
-        private static string PlatformApiPath { get; } = "https://api.thegamesdb.net/v1/Platforms?apikey=946f7777fa10bc47c4b5992ec16d646b1d4d7c0c7b9beb778d88534dd4c75278&fields=icon%2Cconsole%2Ccontroller%2Cdeveloper%2Cmanufacturer%2Cmedia%2Ccpu%2Cmemory%2Cgraphics%2Csound%2Cmaxcontrollers%2Cdisplay%2Coverview%2Cyoutube";
+
+        //private static string PlatformApiPath { get; } = "https://api.thegamesdb.net/v1/Platforms?apikey=946f7777fa10bc47c4b5992ec16d646b1d4d7c0c7b9beb778d88534dd4c75278&fields=icon%2Cconsole%2Ccontroller%2Cdeveloper%2Cmanufacturer%2Cmedia%2Ccpu%2Cmemory%2Cgraphics%2Csound%2Cmaxcontrollers%2Cdisplay%2Coverview%2Cyoutube";
+        private static string PlatformApiPath { get; } = "https://timeonline.se/api/platforms";
+
         private static string Mac = GetMACAddress();
         public static List<BaseUrl> BaseUrls;
 
@@ -31,7 +36,7 @@ namespace RetroGameHandler.Handlers
             {
                 gameName = CleanGameName(gameName, useDirectory);
                 if (string.IsNullOrWhiteSpace(gameName)) return new GameRoot();
-                var path = RGHSettings.ScrapPath + $@"game/{platformId}/{gameName}";
+                var path = RGHSettings.ScrapPath + $@"games/{platformId}/{gameName}";
                 var headers = new Dictionary<string, string>();
 
                 headers.Add("token", token);
@@ -157,7 +162,16 @@ namespace RetroGameHandler.Handlers
                 //gameName = Regex.Replace(gameName, "[ ]{ 2,}", " ");
                 //gameName = Regex.Replace(gameName, " {2,}", "%");
                 gameName = AddSpacesBeforeUpperCase(gameName);
-                gameName = gameName.Replace("&", "%26");
+                //gameName = gameName.Replace("&", "%26");
+                //gameName = gameName.Replace("&", "&amp;");
+                gameName = gameName.Replace("&", "%");
+                gameName = gameName.Replace("\"", "%");
+                gameName = gameName.Replace(" The ", "%");
+                //gameName = gameName.Replace(" - ", "%");
+                // gameName = gameName.Replace("-", "%");
+                //gameName = gameName.Replace(", ", "%");
+                //gameName = gameName.Replace(",", "%");
+
                 if (!useDirectory) gameName = System.IO.Path.GetFileNameWithoutExtension(gameName).Trim();
                 return gameName;
             }
@@ -236,19 +250,23 @@ namespace RetroGameHandler.Handlers
                 //BaseUrls = burl.BaseUrls;
 
                 var tmp = await LiteDBHelper.LoadAsync<PlatformResponse>();
-                platforms = tmp.FirstOrDefault()?.data.Platforms.Select(p => p.Value) ?? null;
+                //platforms = tmp.FirstOrDefault()?.data.Platforms.Select(p => p.Value) ?? null;
+                platforms = null;
                 Dictionary<int, List<string>> extensions;
                 extensions = await Task.Run(() => JsonHandler.DownloadSerializedJsonData<EmuExtensionsEntity>("http://timeonline.se/RGHandler/EmulatorSupportList.json").Extensions.ToDictionary(em => em.id, em => em.extensoins));
                 if (platforms == null)
                 {
                     PlatformResponse p = null;
-                    await Task.Run(() => p = JsonHandler.DownloadSerializedJsonData<PlatformResponse>(PlatformApiPath));
+                    var headers = new Dictionary<string, string>();
+
+                    headers.Add("secret", RGHSettings.ProgGuid);
+                    await Task.Run(() => p = JsonHandler.DownloadSerializedJsonData<PlatformResponse>(PlatformApiPath, headers));
 
                     if (p != null)
                     {
                         await Task.Run(() =>
                         {
-                            platforms = p.data?.Platforms?.Select(i => i.Value);
+                            platforms = p.data?.Platforms;/*?.Select(i => i.Value);*/
 
                             foreach (var pl in platforms)
                             {

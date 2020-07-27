@@ -19,7 +19,8 @@ namespace RetroGameHandler
             ControllImages.Init();
             LiteDBHelper.init();
             TheGamesDbHandler.init();
-            VersionText.Text = Assembly.GetEntryAssembly().GetName().Version.ToString() + "_Alpha";
+            var asse = Assembly.GetEntryAssembly().GetName().Version;
+            VersionText.Text = $"{asse.Major}.{asse.Minor}.{asse.Build}-beta";// Assembly.GetEntryAssembly().GetName().Version.ToString() + "-beta";
             RGHSettings.init();
             PageHandler.AddPage(new firstPage());
             PageHandler.AddPage(new RetroResorcesView());
