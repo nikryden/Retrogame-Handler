@@ -10,10 +10,9 @@ If you have some free time and like to help with coding or testing or have suges
 
 ### For manual go to the [WiKi](https://github.com/nikryden/Retrogame-Handler/wiki) (under construct)
 
-## Warning! This is a Beta build and it is used at your own risk.
+### Warning! This is a Beta build and it is used at your own risk.
 
-[v0.0.10-Beta](https://github.com/nikryden/Retrogame-Handler/releases/tag/0.0.10-beta)
-# v0.0.10-Beta Beter and improved features in the scraping control
+### [v0.0.10-Beta Beter and improved features in the scraping control](https://github.com/nikryden/Retrogame-Handler/releases/tag/0.0.10-beta)
 
 ## Scraping ##
 1. Search is now more accurate. (For my setup almost 95%)
