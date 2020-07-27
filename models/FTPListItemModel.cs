@@ -48,6 +48,7 @@ namespace RetroGameHandler.models
 
         public int ChildCount { get => Items.Count; }
         public bool HasChild { get => Items.Any(); }
+        public string LastSearchParam { get; set; }
 
         public BitmapImage Image
         {
@@ -171,6 +172,14 @@ namespace RetroGameHandler.models
                     return null;
                 }
             });
+        }
+
+        public async Task RenameFile(string toFileName)
+        {
+            var fullName = FullName.Replace(Name, toFileName);
+            await FtpHandler.Instance.RenameFile(this.FullName, fullName, new System.Threading.CancellationToken());
+            FullName = fullName;
+            Name = toFileName;
         }
 
         public void GetImage(bool overwrightIfExists = true)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RetroGameHandler.models
 {
-    internal class DataModel
+    public class DataModel
     {
         private int _id;
 

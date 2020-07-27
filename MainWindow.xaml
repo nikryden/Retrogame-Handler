@@ -202,7 +202,7 @@
                 <StackPanel x:Name="Console" Orientation="Horizontal" Margin="15,0">
                     <TextBlock FontFamily="Verdana" FontSize="18"  FontWeight="Bold" Text="RetroGame Handler" Margin="0,0,10,0" />
                     <TextBlock Text="version:" VerticalAlignment="Bottom" />
-                    <TextBlock x:Name="VersionText" VerticalAlignment="Bottom" />
+                    <TextBlock x:Name="VersionText" VerticalAlignment="Bottom" Margin="5,0,0,0" />
                 </StackPanel>
             </Grid>
         </Grid>

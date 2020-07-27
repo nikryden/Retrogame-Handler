@@ -22,7 +22,7 @@ namespace RetroGameHandler.Entities
     public class data
     {
         public int Count { get; set; }
-        public Dictionary<string, PlatformEntity> Platforms { get; set; }
+        public List<PlatformEntity> Platforms { get; set; }
     }
 
     public class PlatformEntity : LiteDbEntityBase, ICloneable

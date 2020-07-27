@@ -98,7 +98,14 @@ namespace RetroGameHandler.ViewModels
 
         public bool HaveData(char[] Char)
         {
-            return DownloadList.Any(i => !string.IsNullOrWhiteSpace(i.Name) && (Char.Contains(i.Name[0])));
+            return DownloadList.Any(i => !string.IsNullOrWhiteSpace(i.Name) && (Char.Contains(i.Name.ToUpper()[0])) && HaveImages(i.Name));
+        }
+
+        public bool HaveImages(string name)
+        {
+            var grp = DownloadList.GroupBy(s => s.Name);
+            var ret = grp.Any(s => s.Any(d => d.Name == name && !string.IsNullOrWhiteSpace(d.DownloadPath)));
+            return ret;
         }
 
         public int FilesToScrape
@@ -177,7 +184,7 @@ namespace RetroGameHandler.ViewModels
                 }
                 else
                 {
-                    lst = DownloadList?.OrderBy(g => g.Name).Where(l => !string.IsNullOrWhiteSpace(l.Name) && (Character.Contains(l.Name[0]))).ToList() ?? new List<DownloadImageModel>();
+                    lst = DownloadList?.OrderBy(g => g.Name).Where(l => !string.IsNullOrWhiteSpace(l.Name) && (Character.Contains(l.Name.ToUpper()[0])) && HaveImages(l.Name)).ToList() ?? new List<DownloadImageModel>();
                     foreach (var item in lst)
                     {
                         if (!item.HasImage && !string.IsNullOrWhiteSpace(item.DownloadPath))
@@ -203,7 +210,7 @@ namespace RetroGameHandler.ViewModels
             {
                 return Task.Run(() =>
                  {
-                     var lst = DownloadList?.OrderBy(g => g.Name).Where(l => !string.IsNullOrWhiteSpace(l.Name) && (Character.Contains(l.Name[0]))) ?? new ObservableCollection<DownloadImageModel>();
+                     var lst = DownloadList?.OrderBy(g => g.Name).Where(l => !string.IsNullOrWhiteSpace(l.Name) && (Character.Contains(l.Name.ToUpper()[0]))) ?? new ObservableCollection<DownloadImageModel>();
                      foreach (var item in lst)
                      {
                          if (!item.HasImage && !string.IsNullOrWhiteSpace(item.DownloadPath))

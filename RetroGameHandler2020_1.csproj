@@ -129,6 +129,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\RadioButtonExt.cs" />
     <Compile Include="Converter\ObjectConverter.cs" />
     <Compile Include="Entities\DataEntity.cs" />
     <Compile Include="Entities\EmuExtensionsEntity.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="Handlers\RGHSettings.cs" />
     <Compile Include="Handlers\TheGamesDbHandler.cs" />
     <Compile Include="Helpers\FolderStruktureHelper.cs" />
+    <Compile Include="Helpers\GeneralFunctions.cs" />
     <Compile Include="Helpers\NotifyIconHelper.cs" />
     <Compile Include="Interfaces\IConver.cs" />
     <Compile Include="models\DataModel.cs" />
@@ -224,6 +226,12 @@
     </Compile>
     <Compile Include="Views\Modals\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Modals\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Modals\RenameView.xaml.cs">
+      <DependentUpon>RenameView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NotePad.xaml.cs">
       <DependentUpon>NotePad.xaml</DependentUpon>
@@ -356,6 +364,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Modals\SearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Modals\RenameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\NotePad.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -425,7 +441,6 @@
     <Resource Include="images\add-3.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controlls\" />
     <Folder Include="Themes\" />
   </ItemGroup>
   <ItemGroup>

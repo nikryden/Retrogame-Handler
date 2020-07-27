@@ -81,10 +81,20 @@ namespace RetroGameHandler.Views
             }));
         }
 
-        private void updateDownloadList(int id, string name, string gameTitle, string fullname, string url, bool MultiImage = false, bool useDirectory = false)
+        private void updateDownloadList(int id, string name, string gameTitle, string fullname, string url, bool MultiImage = false, bool useDirectory = false, bool removeExisting = false)
         {
             Dispatcher.BeginInvoke((Action)(() =>
             {
+                if (removeExisting)
+                {
+                    var itm = _vieModel.DownloadList.FirstOrDefault(l => l.FullName == fullname);
+                    if (itm != null)
+                    {
+                        _vieModel.DownloadList.Remove(itm);
+                    }
+                    _vieModel.DownloadList.Add(new models.DownloadImageModel(id, name, gameTitle, fullname, url, MultiImage, useDirectory));
+                    return;
+                }
                 var nm = useDirectory ? name : System.IO.Path.GetFileNameWithoutExtension(name);
                 if (_vieModel.DownloadList.Any(g => g.GameTitle == gameTitle && g.Name == nm)) return;
                 _vieModel.DownloadList.Add(new models.DownloadImageModel(id, nm, gameTitle, fullname, url, MultiImage, useDirectory));
@@ -121,7 +131,7 @@ namespace RetroGameHandler.Views
                     DownloadImageList.ItemsSource = await _vieModel.GetPage();
                     //}));
                     view = (CollectionView)CollectionViewSource.GetDefaultView(DownloadImageList.ItemsSource);
-                    view.GroupDescriptions.Add(new PropertyGroupDescription("Name"));
+                    view.GroupDescriptions.Add(new PropertyGroupDescription("FullName"));
                     view.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
                     view.SortDescriptions.Add(new SortDescription("IsSelected", ListSortDirection.Descending));
                     this.Cursor = System.Windows.Input.Cursors.Arrow;
@@ -140,6 +150,61 @@ namespace RetroGameHandler.Views
         private int _countAll = 0;
         public bool _cancelScrap = false;
 
+        private async Task ScrapItem(FtpListItemModel item, int PlatformId, bool useDirectory, bool removeIfExist = false)
+        {
+            var name = (useDirectory ? item.Name : System.IO.Path.GetFileNameWithoutExtension(item.Name)) + ".png";
+            var filePathConsole = $@"{_vieModel.FtpListItem.FullName }/media/{name}";
+            item.LastSearchParam = useDirectory ? item.ParentPath.Split('/').Last() : item.Name;
+            var game = await TheGamesDbHandler.GetGame(item.LastSearchParam, PlatformId, useDirectory, data.ScrapGuid);
+
+            if (game.Games == null || errorHandling(game.Error, 0))
+            {
+                try
+                {
+                    if (game.Error != null && game.Error.Code == 200)
+                    {
+                        data.ScrapGuid = game.UserInfo.NewGuid;
+                        Debug.WriteLine($"game.Error.Message");
+
+                        updateDownloadList(0, item.Name, "", item.mFullName, "", false);
+                    }
+                    else return;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            else
+            {
+                try
+                {
+                    data.ScrapGuid = game.UserInfo.NewGuid;
+                    _countAll++;
+                    foreach (var gme in game.Games)
+                    {
+                        var boxart = gme.BoxArts.FirstOrDefault();
+
+                        if (boxart == null) continue;
+                        var filePath = boxart.Filename;//game.BaseUrls.FirstOrDefault(b => b.Name == "small").Path +
+                        var path = filePath;
+                        Debug.WriteLine($"Found:{ item.Name} ({gme.GameTitle}) path: {path}");
+                        updateDownloadList(gme.Id, useDirectory ? item.ParentPath.Split('/').Last() : item.Name,
+                            gme.GameTitle, item.mFullName, path, game.Games.Count > 1, useDirectory, removeIfExist);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorHandler.Error(ex);
+                    return;
+                }
+            }
+        }
+
+        private IEnumerable<string> getExistingImages = new List<string>();
+
+        private bool skipIfexists = false;
+
         private async Task ScrapingSearch(FtpListItemModel ftpListItem, bool useDirectory, bool isChild = false)
         {
             await Task.Run(async () =>
@@ -155,68 +220,17 @@ namespace RetroGameHandler.Views
                         if (ftpListItem.Items.Any(i => i == null)) await ftpListItem.GetChild(true);
                         //itemsCount = ftpListItem.Items.Count;
 
-                        foreach (var item in ftpListItem.Items)
+                        foreach (var item in ftpListItem.Items.Where(f => !skipIfexists || (skipIfexists && !getExistingImages.Contains(Path.GetFileNameWithoutExtension(f.Name)))))
                         {
                             if (item == null) return;//ToDo;if null load list
                             if (item.IsFile && _vieModel.SelectedPlatform.Extensions.Contains(System.IO.Path.GetExtension(item.Name), StringComparer.OrdinalIgnoreCase))
                             {
-                                var name = (useDirectory ? item.Name : System.IO.Path.GetFileNameWithoutExtension(item.Name)) + ".png";
-                                var filePathConsole = $@"{_vieModel.FtpListItem.FullName }/media/{name}";
-                                //if (await FtpHandler.Instance.FieExist(filePathConsole))
-                                //{
-                                //    updateDownloadList(0, System.IO.Path.GetFileNameWithoutExtension(item.Name), "", filePathConsole);
-                                //    continue;
-                                //}
+                                if (skipIfexists && getExistingImages.Contains(Path.GetFileNameWithoutExtension(item.Name)))
+                                {
+                                    continue;
+                                }
                                 if (_cancelScrap) break;
-                                var game = await TheGamesDbHandler.GetGame(useDirectory ? item.ParentPath.Split('/').Last() : item.Name, PlatformId, useDirectory, data.ScrapGuid);
-
-                                //if (game.Code != 200)
-                                //{
-                                //    MessageBox.Show($"You have reach the limit for this mounth left= {game.RemainingMonthlyAllowance}");
-                                //    return;
-                                //}
-                                if (game.Games == null || errorHandling(game.Error, 0))
-                                {
-                                    try
-                                    {
-                                        if (game.Error != null && game.Error.Code == 200)
-                                        {
-                                            data.ScrapGuid = game.UserInfo.NewGuid;
-                                            Debug.WriteLine($"game.Error.Message");
-
-                                            updateDownloadList(0, System.IO.Path.GetFileNameWithoutExtension(item.Name), "", item.mFullName, "", false);
-                                        }
-                                        else break;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        throw;
-                                    }
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        data.ScrapGuid = game.UserInfo.NewGuid;
-                                        _countAll++;
-                                        foreach (var gme in game.Games)
-                                        {
-                                            var boxart = gme.BoxArts.FirstOrDefault();
-
-                                            if (boxart == null) continue;
-                                            var filePath = boxart.Filename;//game.BaseUrls.FirstOrDefault(b => b.Name == "small").Path +
-                                            var path = filePath;
-                                            Debug.WriteLine($"Found:{ item.Name} ({gme.GameTitle}) path: {path}");
-                                            updateDownloadList(gme.Id, useDirectory ? item.ParentPath.Split('/').Last() : item.Name,
-                                                gme.GameTitle, item.mFullName, path, game.Games.Count > 1, useDirectory);
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        ErrorHandler.Error(ex);
-                                        return;
-                                    }
-                                }
+                                await ScrapItem(item, PlatformId, useDirectory);
                             }
                             else if (item.IsDirectory)
                             {
@@ -226,7 +240,18 @@ namespace RetroGameHandler.Views
                             updateValues(ftpListItem.Items.Count, itemsCount++, item.Name);
                         }
 
-                        if (!isChild) await updateDownloadImageList(true, await UpdateChar());
+                        if (!isChild)
+                        {
+                            var lst = _vieModel.DownloadList?.OrderBy(g => g.Name).Where(l => !string.IsNullOrWhiteSpace(l.Name) && _vieModel.HaveImages(l.Name)).ToList() ?? new List<DownloadImageModel>();
+                            foreach (var item in lst)
+                            {
+                                if (item.IsSelected && lst.Any(l => l.IsSelected && l.Name == item.Name && l.GameTitle != item.GameTitle))
+                                    item.IsSelected = false;
+                                if (!item.IsSelected && lst.Count(g => g.Name == item.Name) == 1) item.IsSelected = true;
+                            }
+
+                            await updateDownloadImageList(true, await UpdateChar());
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -361,6 +386,9 @@ namespace RetroGameHandler.Views
                 }
                 //
                 _cancelScrap = false;
+                getExistingImages = FtpHandler.Instance.List(_vieModel.FtpListItem.mFullName + "/media").Where(f => f.Name.EndsWith(".png")).Select(f => Path.GetFileNameWithoutExtension(f.Name));
+                skipIfexists = cbSkipExist.IsChecked.Value;
+                //_ = Dispatcher.BeginInvoke((Action)(() => skipIfexists = cbSkipExist.IsChecked.Value));
                 await ScrapingSearch(_vieModel.FtpListItem, cbUseDirectory.IsChecked.Value);
                 spPbScraping.Visibility = Visibility.Collapsed;
                 status.Text = "";
@@ -498,6 +526,116 @@ namespace RetroGameHandler.Views
         private void btnCancelScrap_Click(object sender, RoutedEventArgs e)
         {
             _cancelScrap = true;
+        }
+
+        private async void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var sendr = (MenuItem)sender;
+            var dc = (CollectionViewGroup)sendr.DataContext;
+            var nm = dc.Name.ToString();
+
+            var item = (DownloadImageModel)dc.Items[0];// _vieModel.FtpListItem.Items.FirstOrDefault(s => s.Name.StartsWith(nm));
+            if (item == null) return;
+            var rnView = new RenameView(data, _vieModel.SelectedPlatform.Id);
+            rnView.Title = $" Rename game";
+            rnView.Owner = Window.GetWindow(this);
+            rnView.Icon = _vieModel.SelectedPlatform.BitmapImage;
+            rnView.DownloadImageModel = item;
+            var res = rnView.ShowDialog();
+            if (res.HasValue && res.Value)
+            {
+                var ftpItem = FindFtpItem(_vieModel.FtpListItem.Items.FirstOrDefault(s => s.FullName == item.FullName || item.FullName.Contains(s.FullName)));
+                if (ftpItem == null) return;
+                item.FullName = item.FullName.Replace(Path.GetFileNameWithoutExtension(ftpItem.Name), item.Name);
+                await ftpItem.RenameFile(item.Name + Path.GetExtension(item.FullName));
+
+                var PlatformId = _vieModel.SelectedPlatform.Id;
+                await ScrapItem(ftpItem, PlatformId, false);
+                LiteDBHelper.Save(data);
+                await UpdateChar();
+                var ch = new char[] { '!' };
+                await updateDownloadImageList(true, ch);
+            }
+        }
+
+        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
+        {
+            var sendr = (MenuItem)sender;
+            var dc = (CollectionViewGroup)sendr.DataContext;
+            var nm = dc.Name.ToString();
+            System.Windows.Clipboard.SetText(nm);
+            MessageBox.Show("Copy to clipboard ok", "Copy", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void RadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            //var sendr = (RadioButton)sender;
+            //var dc = (DownloadImageModel)sendr.DataContext;
+            ////dc.IsSelected = !dc.IsSelected;
+            //sendr.IsChecked = !sendr.IsChecked;
+        }
+
+        private async void MenuItem_Click_Search(object sender, RoutedEventArgs e)
+        {
+            var sendr = (MenuItem)sender;
+            var dc = (CollectionViewGroup)sendr.DataContext;
+            var nm = dc.Name.ToString();
+
+            var item = (DownloadImageModel)dc.Items[0];// _vieModel.FtpListItem.Items.FirstOrDefault(s => s.Name.StartsWith(nm));
+            if (item == null) return;
+            var rnView = new SearchView(data, _vieModel.SelectedPlatform.Id);
+            rnView.Title = $" Search for game";
+            rnView.Owner = Window.GetWindow(this);
+            rnView.Icon = _vieModel.SelectedPlatform.BitmapImage;
+            rnView.DownloadImageModel = item;
+            var res = rnView.ShowDialog();
+            if (res.HasValue && res.Value)
+            {
+                var ftpItem = FindFtpItem(_vieModel.FtpListItem.Items.FirstOrDefault(s => s.FullName == item.FullName || item.FullName.Contains(s.FullName)));
+
+                if (ftpItem == null) return;
+                ftpItem.Name = item.Name;
+                //item.FullName = item.FullName.Replace(Path.GetFileNameWithoutExtension(ftpItem.Name), item.Name);
+                var PlatformId = _vieModel.SelectedPlatform.Id;
+                await ScrapItem(ftpItem, PlatformId, false, true);
+                LiteDBHelper.Save(data);
+                await UpdateChar();
+                var ch = new char[] { '!' };
+                await updateDownloadImageList(true, ch);
+            }
+        }
+
+        private void MenuItem_Click_Info(object sender, RoutedEventArgs e)
+        {
+            var sendr = (MenuItem)sender;
+            var dc = (CollectionViewGroup)sendr.DataContext;
+            var nm = dc.Name.ToString();
+
+            var item = (DownloadImageModel)dc.Items[0];
+            var vm = FindFtpItem(_vieModel.FtpListItem.Items.FirstOrDefault(i => item.FullName.Contains(i.FullName)));
+            var message = $"File path:{item.FullName}\nSearch:{vm.LastSearchParam}";
+            MessageBox.Show(message, "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private FtpListItemModel FindFtpItem(FtpListItemModel item)
+        {
+            if (item == null) return null;
+            if (item.IsDirectory) return FindFtpItem(item.Items.FirstOrDefault(i => i.FullName.Contains(item.FullName)));
+            else return item;
+        }
+
+        private void ComboBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var cb = (ComboBox)sender;
+            foreach (PlatformModel i in cb.Items)
+            {
+                if (i.Name.ToUpper().StartsWith(e.Text.ToUpper()))
+                {
+                    cb.SelectedItem = i;
+                    break;
+                }
+            }
+            e.Handled = true;
         }
     }
 }
