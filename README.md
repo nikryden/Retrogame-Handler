@@ -2,7 +2,7 @@
 
 ![](http://timeonline.se/RGHandler/images/TimeOnlineLogoV3.png)
 
-Retrogame Handler!
+
 
 Easy to use handler for Retro handheld consoles with built in FTP. 
 I have done this project firstly for my own needs so please have patience. 
