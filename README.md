@@ -17,9 +17,10 @@ If you have some free time and like to help with coding or testing or have suges
 
 ## Scraping ##
 1. Search is now more accurate. (For my setup almost 95%)
-2. Fix the error 500  when search.
-3. Manual search for games images.(Right click in the result control on the game you like to manual search)
-4. Rename the file in the scraper. (Right click in the result control on the game you like to manual search)
+2. Posibility to skip searching for images that allready in the consoles selected games media folder.
+3. Fix the error 500  when search.
+4. Manual search for games images.(Right click in the result control on the game you like to manual search)
+5. Rename the file in the scraper. (Right click in the result control on the game you like to manual search)
 
 [v0.0.9-Beta](https://github.com/nikryden/Retrogame-Handler/releases/tag/0.0.9-beta)
 ### Features in v0.0.9-beta version
