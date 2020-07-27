@@ -12,6 +12,15 @@ If you have some free time and like to help with coding or testing or have suges
 
 ## Warning! This is a Beta build and it is used at your own risk.
 
+[v0.0.10-Beta](https://github.com/nikryden/Retrogame-Handler/releases/tag/0.0.10-beta)
+# v0.0.10-Beta Beter and improved features in the scraping control
+
+## Scraping ##
+1. Search is now more accurate. (For my setup almost 95%)
+2. Fix the error 500  when search.
+3. Manual search for games images.(Right click in the result control on the game you like to manual search)
+4. Rename the file in the scraper. (Right click in the result control on the game you like to manual search)
+
 [v0.0.9-Beta](https://github.com/nikryden/Retrogame-Handler/releases/tag/0.0.9-beta)
 ### Features in v0.0.9-beta version
 
