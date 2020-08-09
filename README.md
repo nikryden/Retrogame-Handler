@@ -15,7 +15,9 @@ If you have some free time and like to help with coding or testing or have suges
 ### [v0.0.10-Beta Beter and improved features in the scraping control](https://github.com/nikryden/Retrogame-Handler/releases/tag/0.0.10-beta)
 
 ## Scraping ##
-1. Search is now more accurate. (For my setup almost 95%)
+
+It use The games DB as database as source [THEGAMESDB](https://thegamesdb.net/)
+1. Search is now more accurate. The database now have 66817 games with images in it (For my setup it found almost 95% at first try and the missing one had bad filenames so when clening up it found about 99%)
 2. Posibility to skip searching for images that allready in the consoles selected games media folder.
 3. Fix the error 500  when search.
 4. Manual search for games images.(Right click in the result control on the game you like to manual search)
