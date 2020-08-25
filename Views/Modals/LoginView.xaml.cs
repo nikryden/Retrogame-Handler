@@ -115,7 +115,7 @@ namespace RetroGameHandler.Views.Modals
         {
             var url = RGHSettings.ScrapPath + "activate";
             var headers = new Dictionary<string, string>();
-            headers.Add("email", email.Text);
+            headers.Add("email", email2.Text);
             headers.Add("activationcode", acctivationCode.Text);
             headers.Add("secret", RGHSettings.ProgGuid);
             var info = JsonHandler.DownloadSerializedJsonData<Info>(url, headers);
