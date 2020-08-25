@@ -94,7 +94,7 @@
                                 <ColumnDefinition Width="150" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <cont:RadioButtonExt GroupName="{Binding Name}" IsChecked="{Binding IsSelected}" Visibility="{Binding  ShowCheckbox,Converter={StaticResource VisibleIfTrueConverter}}" />
+                            <cont:RadioButtonExt GroupName="{Binding FullName}" IsChecked="{Binding IsSelected}" Visibility="{Binding  ShowCheckbox,Converter={StaticResource VisibleIfTrueConverter}}" />
                             <Rectangle Grid.Column="1" Margin="5,0" Width="120" Height="120" Visibility="{Binding  HasImage,Converter={StaticResource VisibleIfTrueConverter}}">
                                 <Rectangle.Fill>
                                     <ImageBrush ImageSource="{Binding Image.ImageSource}" />
