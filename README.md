@@ -10,6 +10,14 @@ If you have some free time and like to help with coding or testing or have suges
 
 ### For manual go to the [WiKi](https://github.com/nikryden/Retrogame-Handler/wiki) (under construct)
 
+### [v1.0.0 Production](https://github.com/nikryden/Retrogame-Handler/releases/tag/v1.0.0)
+
+This is the production version.
+
+1. Lots of bugs is fixed.
+2. Add about page
+3. Add link to wiki
+
 ### Warning! This is a Beta build and it is used at your own risk.
 ### [v0.0.10.1-Beta Fix](https://github.com/nikryden/Retrogame-Handler/tree/0.0.10.1-beta)
   
