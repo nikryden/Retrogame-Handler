@@ -41,6 +41,8 @@ namespace RetroGameHandler.Handlers
 
                 headers.Add("token", token);
                 headers.Add("secret", RGHSettings.ProgGuid);
+
+                headers.Add("version", RGHSettings.Version);
                 return await Task.Run(() => JsonHandler.DownloadSerializedJsonData<GameRoot>(path, headers));
             }
             catch (Exception ex)
@@ -260,6 +262,7 @@ namespace RetroGameHandler.Handlers
                     var headers = new Dictionary<string, string>();
 
                     headers.Add("secret", RGHSettings.ProgGuid);
+                    headers.Add("version", RGHSettings.Version);
                     await Task.Run(() => p = JsonHandler.DownloadSerializedJsonData<PlatformResponse>(PlatformApiPath, headers));
 
                     if (p != null)

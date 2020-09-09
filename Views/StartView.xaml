@@ -157,7 +157,19 @@
 
         <TreeView x:Name="FileList" Grid.Column="1" ItemsSource="{Binding FtpListItems}" SelectedItemChanged="FileList_SelectedItemChanged_1"
                   TreeViewItem.Expanded="TreeView_Expanded" Foreground="White" Background="#2c2c2c">
-            <TreeView.ItemTemplate>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                     Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                     Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+                    </Style.Resources>
+                  
+                </Style>
+                </TreeView.ItemContainerStyle>
+
+                    <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type self:FtpListItemModel}" ItemsSource="{Binding Items}">
                     <TextBlock Text="{Binding Name}"  Foreground="White" MouseLeftButtonDown="TreeView_TextBlock_MouseLeftButtonDown" />
                 </HierarchicalDataTemplate>

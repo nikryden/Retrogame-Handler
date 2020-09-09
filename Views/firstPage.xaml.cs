@@ -4,7 +4,7 @@ using RetroGameHandler.Views.Modals;
 using System;
 using System.Diagnostics;
 using System.IO;
-
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -33,8 +33,44 @@ namespace RetroGameHandler.Views
 
         private void DownloadImage()
         {
-            Uri resourceUri = new Uri("http://timeonline.se/RGHandler/images/info.png", UriKind.Absolute);
-            imgInfo.Source = new BitmapImage(resourceUri);
+            var ver = RGHSettings.Version.Replace(".", "_");
+            if (DoesImageExistRemotely($"http://timeonline.se/RGHandler/images/info_{ver}.png"))
+            {
+                Uri resourceUri = new Uri($"http://timeonline.se/RGHandler/images/info_{ver}.png", UriKind.Absolute);
+                imgInfo.Source = new BitmapImage(resourceUri);
+            }
+            else if (DoesImageExistRemotely("http://timeonline.se/RGHandler/images/info.png"))
+            {
+                Uri resourceUri = new Uri("http://timeonline.se/RGHandler/images/info.png", UriKind.Absolute);
+                imgInfo.Source = new BitmapImage(resourceUri);
+            }
+        }
+
+        public bool DoesImageExistRemotely(string uriToImage)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uriToImage);
+
+            request.Method = "HEAD";
+
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (WebException) { return false; }
+            catch
+            {
+                return false;
+            }
         }
 
         private void driverInstall()

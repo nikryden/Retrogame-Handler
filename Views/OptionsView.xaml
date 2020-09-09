@@ -70,11 +70,11 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="FTP Password" />
-                    <TextBox Grid.Column="1" Text="{Binding SelectedFtpSetting.FtpPassword}"  />
+                    <TextBox Grid.Column="1" Text="{Binding SelectedFtpSetting.FtpPassword}" />
                 </Grid>
             </StackPanel>
         </GroupBox>
-        <StackPanel Grid.Column="1" Grid.Row="3">
+        <StackPanel Grid.Column="1" Grid.Row="2">
             <Grid>
                 <Button x:Name="Save" Content="Save" Height="50" Click="Save_Click" IsEnabled="{Binding Dirty}" />
             </Grid>

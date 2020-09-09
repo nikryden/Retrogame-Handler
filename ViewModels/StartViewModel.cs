@@ -180,6 +180,7 @@ namespace RetroGameHandler.ViewModels
         public async Task GetFtpChildItems(FtpListItemModel model = null, bool doNext = true)
         {
             if (model == null) return;
+
             await GetFtpListItems(model.Items, model.FullName);
         }
 
@@ -208,7 +209,7 @@ namespace RetroGameHandler.ViewModels
                         if (item.Type == FtpFileSystemObjectType.File) continue;
                         App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
                         {
-                            item.Items.Add(null);
+                            if (item.Items.Count == 0) item.Items.Add(null);
                         });
                     }
                 }
@@ -274,7 +275,14 @@ namespace RetroGameHandler.ViewModels
                 {
                     listTask.Add(SetOsReleaseInfo());
                 }
-                await Task.WhenAll(listTask);
+                try
+                {
+                    await Task.WhenAll(listTask);
+                }
+                catch (Exception ex)
+                {
+                    ErrorHandler.Error(ex);
+                }
 
                 _updatetimer.Interval = 3000;
             }

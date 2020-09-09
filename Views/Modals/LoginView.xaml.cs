@@ -40,6 +40,7 @@ namespace RetroGameHandler.Views.Modals
             headers.Add("email", email2.Text);
             headers.Add("password", password2.Password);
             headers.Add("secret", RGHSettings.ProgGuid);
+            headers.Add("version", RGHSettings.Version);
             var info = JsonHandler.DownloadSerializedJsonData<Info>(url, headers);
             if (info.Error.Code > 299)
             {

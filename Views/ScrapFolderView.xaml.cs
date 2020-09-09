@@ -637,5 +637,14 @@ namespace RetroGameHandler.Views
             }
             e.Handled = true;
         }
+
+        private void MenuItem_Click_CopyTitle(object sender, RoutedEventArgs e)
+        {
+            var sendr = (MenuItem)sender;
+            var dc = (CollectionViewGroup)sendr.DataContext;
+            var nm = (DownloadImageModel)dc.Items[0];
+            System.Windows.Clipboard.SetText(nm.Name);
+            MessageBox.Show("Copy to clipboard ok", "Copy", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 }
