@@ -18,9 +18,9 @@ This is the production version.
 2. Add about page
 3. Add link to wiki
 
-### Warning! This is a Beta build and it is used at your own risk.
+
 ### [v0.0.10.1-Beta Fix](https://github.com/nikryden/Retrogame-Handler/tree/0.0.10.1-beta)
-  
+### Warning! This is a Beta build and it is used at your own risk.
   Fix activation bug that some times prevent activation of the scraper.
   
 ### [v0.0.10-Beta Beter and improved features in the scraping control](https://github.com/nikryden/Retrogame-Handler/releases/tag/0.0.10-beta)
