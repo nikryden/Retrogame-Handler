@@ -130,7 +130,7 @@
                                                           ToolTip="This will change the file name"
                                                           Visibility="{Binding Items,Converter={StaticResource VisibleIfNotZeroConverterInvert}}">
                                                     <MenuItem.Icon>
-                                                        <fa:ImageAwesome Icon="Edit" Foreground="Black" />
+                                                        <fa:ImageAwesome Icon="Pencil" Foreground="Black" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
                                                 <MenuItem Header="Manual search"
@@ -140,9 +140,14 @@
                                                         <fa:ImageAwesome Icon="Search" Foreground="Black" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                <MenuItem Header="Copy title to clipboard" Click="MenuItem_Click_Copy">
+                                                <MenuItem Header="Copy game path to clipboard" Click="MenuItem_Click_Copy">
                                                     <MenuItem.Icon>
                                                         <fa:ImageAwesome Icon="Copy" Foreground="Black" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Copy search value to clipboard" Click="MenuItem_Click_CopyTitle">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Clipboard" Foreground="Black" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
                                                 <MenuItem Header="Info" Click="MenuItem_Click_Info">

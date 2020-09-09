@@ -5,6 +5,7 @@ using RetroGameHandler.Views;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace RetroGameHandler
 {
@@ -19,9 +20,9 @@ namespace RetroGameHandler
             ControllImages.Init();
             LiteDBHelper.init();
             TheGamesDbHandler.init();
-            var asse = Assembly.GetEntryAssembly().GetName().Version;
-            VersionText.Text = $"{asse.Major}.{asse.Minor}.{asse.Build}-beta";// Assembly.GetEntryAssembly().GetName().Version.ToString() + "-beta";
+            // Assembly.GetEntryAssembly().GetName().Version.ToString() + "-beta";
             RGHSettings.init();
+            VersionText.Text = RGHSettings.Version;
             PageHandler.AddPage(new firstPage());
             PageHandler.AddPage(new RetroResorcesView());
             PageHandler.AddPage(new StartView());
@@ -30,6 +31,7 @@ namespace RetroGameHandler
             PageHandler.AddPage(new ScrapFolderView());
             PageHandler.AddPage(new NotePad());
             PageHandler.AddPage(new LogView());
+            PageHandler.AddPage(new AboutView());
 
             this.DataContext = PageHandler.Instance;
             PageHandler.SelectedPage<firstPage>();
@@ -129,6 +131,20 @@ namespace RetroGameHandler
         private void LogPage_Click(object sender, RoutedEventArgs e)
         {
             PageHandler.SelectedPage<LogView>();
+        }
+
+        private void AboutPage_Click(object sender, RoutedEventArgs e)
+        {
+            PageHandler.SelectedPage<AboutView>();
+        }
+
+        private void nvgUri_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.Uri.ToString());
+        }
+
+        private void HelpPage_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

@@ -88,13 +88,13 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <fa:ImageAwesome Icon="SignIn" Height="16" Foreground="Black" />
-                    <TextBlock Grid.Column="1" Text="Scraper" Margin="5,0,0,0" FontWeight="Bold" />
+                    <TextBlock Grid.Column="1" Text="Scraper register" Margin="1,0,0,0" FontWeight="Bold" />
                 </Grid>
             </Button>
             <!--<Button x:Name="btnDriverInstall" Content="Install USb driver" Click="btnDriverInstall_Click" />-->
         </StackPanel>
 
-        <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="0" CornerRadius="2" Background="Transparent" Margin="10,0">
+        <Border Grid.Column="1" BorderBrush="Gray" Background="White" BorderThickness="0" CornerRadius="2"  Margin="10,0">
             <Grid>
                 <Image x:Name="imgInfo" Source="../images/info.png" VerticalAlignment="Top" />
                 <!--<WebBrowser x:Name="brwsrInfo"  />-->

@@ -214,6 +214,9 @@
     <Compile Include="ViewModels\RetroResorcesViewModel.cs" />
     <Compile Include="ViewModels\ScrapFolderViewModel.cs" />
     <Compile Include="ViewModels\StartViewModel.cs" />
+    <Compile Include="Views\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\firstPage.xaml.cs">
       <DependentUpon>firstPage.xaml</DependentUpon>
     </Compile>
@@ -348,6 +351,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\AboutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\firstPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -411,6 +418,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="LICENSE" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -444,6 +452,7 @@
     <Folder Include="Themes\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\LICENS.txt" />
     <Resource Include="RG350-signed_driver\RNDIS.inf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

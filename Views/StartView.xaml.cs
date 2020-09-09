@@ -5,6 +5,7 @@ using RetroGameHandler.Helpers;
 using RetroGameHandler.models;
 using RetroGameHandler.ViewModels;
 using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -76,7 +77,13 @@ namespace RetroGameHandler.Views
                 {
                     ftpItmListM.GetImage();
                 }
-                if (ftpItmListM.IsOpk)
+                DirFileInfo.DataContext = ftpItmListM;
+                DirFileInfo.Visibility = Visibility.Visible;
+                spFileRename.Visibility = Visibility.Collapsed;
+                spDirectoryRename.Visibility = Visibility.Collapsed;
+                textBlock.Cursor = Cursors.Arrow;
+                var showOpkInfo = false;
+                if (showOpkInfo && ftpItmListM.IsOpk)
                 {
                     var info = await ftpItmListM.GetOpkInfo();
                     this.Dispatcher.Invoke((Action)delegate // <--- HERE
@@ -87,11 +94,6 @@ namespace RetroGameHandler.Views
                         opkImage.Source = info?.Image;
                     });
                 }
-                DirFileInfo.DataContext = ftpItmListM;
-                DirFileInfo.Visibility = Visibility.Visible;
-                spFileRename.Visibility = Visibility.Collapsed;
-                spDirectoryRename.Visibility = Visibility.Collapsed;
-                textBlock.Cursor = Cursors.Arrow;
             }
             catch (Exception ex)
             {
@@ -203,24 +205,42 @@ namespace RetroGameHandler.Views
         private async void btnConnect_Click(object sender, RoutedEventArgs e)
         {
             ((Button)sender).IsEnabled = false;
-
-            var isConnected = ((StartViewModel)ViewModel).IsConnected =
-                                !((StartViewModel)ViewModel).IsConnected;
+            var vM = ((StartViewModel)ViewModel);
+            var isConnected = vM.IsConnected =
+                                !vM.IsConnected;
 
             if (isConnected)
             {
                 btnConnect.Content = "Disconnect";
-                await ((StartViewModel)ViewModel).GetFtpListItems();
+                vM.PropertyChanged += VM_PropertyChanged;
+                await vM.GetFtpListItems();
             }
-            else
-            {
-                btnConnect.Content = "Connect";
-                DirFileInfo.Visibility = Visibility.Hidden;
-                DirFileInfo.DataContext = null;
-                ((StartViewModel)ViewModel).FtpListItems?.Clear();
-            }
+            //else
+            //{
+            //    btnConnect.Content = "Connect";
+            //    DirFileInfo.Visibility = Visibility.Hidden;
+            //    DirFileInfo.DataContext = null;
+            //    vM.FtpListItems?.Clear();
+
+            //}
 
             ((Button)sender).IsEnabled = true;
+        }
+
+        private void VM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.Dispatcher.Invoke((Action)delegate // <--- HERE
+            {
+                var vM = ((StartViewModel)ViewModel);
+                if (!vM.IsConnected)
+                {
+                    btnConnect.Content = "Connect";
+                    DirFileInfo.Visibility = Visibility.Hidden;
+                    DirFileInfo.DataContext = null;
+                    vM.FtpListItems?.Clear();
+                    vM.PropertyChanged -= VM_PropertyChanged;
+                }
+            });
         }
 
         private void ScrapeFolder_Click(object sender, RoutedEventArgs e)
@@ -339,7 +359,13 @@ namespace RetroGameHandler.Views
                 {
                     ftpItmListM.GetImage();
                 }
-                if (ftpItmListM.IsOpk)
+                DirFileInfo.DataContext = ftpItmListM;
+                DirFileInfo.Visibility = Visibility.Visible;
+                treeView.Cursor = Cursors.Arrow;
+                spFileRename.Visibility = Visibility.Collapsed;
+                spDirectoryRename.Visibility = Visibility.Collapsed;
+                var showOpkInfo = false;
+                if (showOpkInfo && ftpItmListM.IsOpk)
                 {
                     var info = await ftpItmListM.GetOpkInfo();
                     this.Dispatcher.Invoke((Action)delegate // <--- HERE
@@ -350,11 +376,6 @@ namespace RetroGameHandler.Views
                         opkImage.Source = info?.Image;
                     });
                 }
-                DirFileInfo.DataContext = ftpItmListM;
-                DirFileInfo.Visibility = Visibility.Visible;
-                treeView.Cursor = Cursors.Arrow;
-                spFileRename.Visibility = Visibility.Collapsed;
-                spDirectoryRename.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
             {
@@ -368,14 +389,15 @@ namespace RetroGameHandler.Views
         {
             var button = (Button)sender;
             //button.Visibility = Visibility.Collapsed;
-            UploadProgress.Visibility = Visibility.Visible;
-            DirFileInfo.IsEnabled = false;
-            FileList.IsEnabled = false;
+
             var ftpItmListM = (FtpListItemModel)button.DataContext;
             var openFileDialog = new System.Windows.Forms.FolderBrowserDialog();
             openFileDialog.ShowNewFolderButton = true;
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                UploadProgress.Visibility = Visibility.Visible;
+                DirFileInfo.IsEnabled = false;
+                FileList.IsEnabled = false;
                 var path = openFileDialog.SelectedPath;
                 var ftpHelper = new FtpHelper();
                 Progress<FtpProgress> progress = new Progress<FtpProgress>(p =>
@@ -408,14 +430,12 @@ namespace RetroGameHandler.Views
                 UploadProgress.Visibility = Visibility.Collapsed;
                 DirFileInfo.IsEnabled = true;
                 FileList.IsEnabled = true;
-                var holeDamThing = (StartViewModel)FileList.DataContext;
-                var dt = await holeDamThing.FindItemByPathAsync(ftpItmListM.FullName);
-                if (dt != null)
+                ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    //var dt2 = await holeDamThing.FindItemByPathAsync(dt.ParentPath);
-                    //await holeDamThing.GetFtpChildItems(dt2);
-                    await holeDamThing.GetFtpListItems(dt.Items, dt.FullName, true);
-                }
+                    Arguments = path,
+                    FileName = "explorer.exe"
+                };
+                Process.Start(startInfo);
             }
         }
 
@@ -423,15 +443,16 @@ namespace RetroGameHandler.Views
         {
             var button = (Button)sender;
             //button.Visibility = Visibility.Collapsed;
-            UploadProgress.Visibility = Visibility.Visible;
-            DirFileInfo.IsEnabled = false;
-            FileList.IsEnabled = false;
+
             var ftpItmListM = (FtpListItemModel)button.DataContext;
             var openFileDialog = new System.Windows.Forms.SaveFileDialog();
             openFileDialog.FileName = ftpItmListM.Name;
             openFileDialog.Filter = "All Files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                UploadProgress.Visibility = Visibility.Visible;
+                DirFileInfo.IsEnabled = false;
+                FileList.IsEnabled = false;
                 var path = openFileDialog.FileName;
                 var ftpHelper = new FtpHelper();
                 Progress<FtpProgress> progress = new Progress<FtpProgress>(p =>
@@ -460,18 +481,10 @@ namespace RetroGameHandler.Views
                 UploadProgress.DataContext = ftpHelper;
                 cancellationTokenSource = new CancellationTokenSource();
                 var res = await ftpHelper.DownloadFileAsync(ftpItmListM.FullName, path, cancellationTokenSource.Token, progress);
-                //button.Visibility = Visibility.Visible;
+
                 UploadProgress.Visibility = Visibility.Collapsed;
                 DirFileInfo.IsEnabled = true;
                 FileList.IsEnabled = true;
-                var holeDamThing = (StartViewModel)FileList.DataContext;
-                var dt = await holeDamThing.FindItemByPathAsync(ftpItmListM.FullName);
-                if (dt != null)
-                {
-                    //var dt2 = await holeDamThing.FindItemByPathAsync(dt.ParentPath);
-                    //await holeDamThing.GetFtpChildItems(dt2);
-                    await holeDamThing.GetFtpListItems(dt.Items, dt.FullName, true);
-                }
             }
         }
 

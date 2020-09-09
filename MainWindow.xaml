@@ -93,12 +93,29 @@
                                     <fa:ImageAwesome Icon="Bug" Foreground="White" Width="12" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem x:Name="AboutPage"
-                                      Header="About"
+                            <MenuItem x:Name="HelpWWWPage"
+
                                        Padding="10,2,10,0"
+                                      Click="HelpPage_Click"
                                       Template="{DynamicResource MenuItemControlTemplate1}">
                                 <MenuItem.Icon>
                                     <fa:ImageAwesome Icon="QuestionCircleOutline" Foreground="White" Width="12" />
+                                </MenuItem.Icon>
+                                <MenuItem.Header>
+                                    <Hyperlink NavigateUri="https://github.com/nikryden/Retrogame-Handler/wiki"
+                                                 x:Name="nvgUri"
+                                                RequestNavigate="nvgUri_RequestNavigate">
+                                        <TextBlock Text="WiKi" />
+                                    </Hyperlink>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem x:Name="AboutPage"
+                                      Header="About"
+                                       Padding="10,2,10,0"
+                                      Click="AboutPage_Click"
+                                      Template="{DynamicResource MenuItemControlTemplate1}">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="InfoCircle" Foreground="White" Width="12" />
                                 </MenuItem.Icon>
                             </MenuItem>
                         </MenuItem>

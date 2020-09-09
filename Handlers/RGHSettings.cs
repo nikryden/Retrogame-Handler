@@ -11,6 +11,7 @@ namespace RetroGameHandler.Handlers
         public static string ScrapPath { get; } = "https://timeonline.se/api/";
         public static ErrorLevel LogLevel { get; set; } = ErrorLevel.DEBUG;
         public static bool AutoSave { get; set; } = true;
+        public static string Version { get; set; }
         public static RGHSettingsModel ProgramSetting { get; set; }
 
         public static void Save()
@@ -36,6 +37,9 @@ namespace RetroGameHandler.Handlers
         public static void init()
         {
             ProgramSetting = LiteDBHelper.RGHGetData();
+            var asse = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
+            var version = $"{asse.Major}.{asse.Minor}.{asse.Build}";
+            Version = version;
         }
     }
 }
