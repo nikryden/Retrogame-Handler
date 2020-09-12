@@ -15,6 +15,7 @@ If you have some free time and like to help with coding or testing or have suges
 2. Save game meta info like (description, date of release and publisher) to text file (planded for 1.0.1).
 3. Scraping images and data for Emulationstation (planded for 1.0.1).
 4. Easy update of the program (planded for 1.0.1).
+5. Autosync folders. Add or remove games in folder on PC and when connect to console update folder on console (planded for 1.0.1 maybe 1.0.2).
 
 **If you have any features you like to se in the program please add a issue.**
 
