@@ -10,6 +10,14 @@ If you have some free time and like to help with coding or testing or have suges
 
 ### For manual go to the [WiKi](https://github.com/nikryden/Retrogame-Handler/wiki) (under construct)
 
+### Pland Features
+1. Save game images to the computer
+2. Save game meta info like (description, date of release and publisher) to text file.
+3. Easy update of the program.
+
+**If you have any features you like to se in the program please add a issue.**
+
+
 ### [v1.0.0 Production](https://github.com/nikryden/Retrogame-Handler/releases/tag/v1.0.0)
 
 This is the production version.
