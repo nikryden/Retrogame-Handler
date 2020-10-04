@@ -57,6 +57,12 @@ namespace RetroGameHandler.Handlers
             Instance.loadFile(filStoragePath, Filename, OutStream);
         }
 
+        public static bool FileExists(string filStoragePath, string Filename)
+        {
+            if (Instance == null) init();
+            return Instance.fileExists(filStoragePath, Filename);
+        }
+
         public static void DeleteFile(string filStoragePath, string Filename)
         {
             if (Instance == null) init();
@@ -162,6 +168,14 @@ namespace RetroGameHandler.Handlers
                     fs.Delete(item.Id);
                 }
             }
+        }
+
+        internal bool fileExists(string filStoragePath, string Filename)
+        {
+            var fs = db.FileStorage;
+            var file = fs.FindById($"$/{filStoragePath}/{Filename}");
+
+            return file != null;
         }
 
         internal void loadFile(string filStoragePath, string Filename, Stream stream)

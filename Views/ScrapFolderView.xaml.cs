@@ -1,17 +1,12 @@
-﻿using RetroGameHandler.Entities;
-using RetroGameHandler.Handlers;
+﻿using RetroGameHandler.Handlers;
 using RetroGameHandler.models;
-using RetroGameHandler.thegamesAPI.Game1_1;
-using RetroGameHandler.thegamesdbModel;
 using RetroGameHandler.TimeOnline;
 using RetroGameHandler.ViewModels;
 using RetroGameHandler.Views.Modals;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -32,27 +27,25 @@ namespace RetroGameHandler.Views
         public string Title { get; set; } = "ScrapPage";
         public BaseViewModel ViewModel { get; set; } = new ScrapFolderViewModel();
         private ScrapFolderViewModel _vieModel { get; set; }
+        private string _downloadpath = @"C:\";
+        private string _imageDirectory = "media";
 
         public ScrapFolderView()
         {
             InitializeComponent();
             _vieModel = (ScrapFolderViewModel)ViewModel;
 
-            //_vieModel.PageLoadReady += (s, e) =>
-            //{
-            //    view = (CollectionView)CollectionViewSource.GetDefaultView(DownloadImageList.ItemsSource);
-            //    view.GroupDescriptions.Add(new PropertyGroupDescription("Name"));
-            //    view.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
-            //    view.SortDescriptions.Add(new SortDescription("IsSelected", ListSortDirection.Descending));
-            //};
-
             DataContext = ViewModel;
             this.Loaded += LoadOnce;
             this.Loaded += LoadPage;
+            _downloadpath = Properties.Settings.Default.ScrapDownloadPath;
+            cbCreateGameList.IsChecked = Properties.Settings.Default.CreateGameList;
+            cbClearGameList.IsChecked = Properties.Settings.Default.ClearGameList;
         }
 
         private void LoadPage(object sender, RoutedEventArgs e)
         {
+            _imageDirectory = Properties.Settings.Default.ImageDirector;
             //var data = LiteDBHelper.Load<DataModel>().FirstOrDefault() ?? new DataModel() { Id = 1, ScrapGuid = "", ScrapEmail = "" };
             //if (string.IsNullOrWhiteSpace(data.ScrapGuid))
             //{
@@ -81,7 +74,7 @@ namespace RetroGameHandler.Views
             }));
         }
 
-        private void updateDownloadList(int id, string name, string gameTitle, string fullname, string url, bool MultiImage = false, bool useDirectory = false, bool removeExisting = false)
+        private void updateDownloadList(int id, string name, string gameTitle, string fullname, string url, string overview, string releaseDate, int players, string publisher, string rating, bool MultiImage = false, bool useDirectory = false, bool removeExisting = false)
         {
             Dispatcher.BeginInvoke((Action)(() =>
             {
@@ -92,12 +85,12 @@ namespace RetroGameHandler.Views
                     {
                         _vieModel.DownloadList.Remove(itm);
                     }
-                    _vieModel.DownloadList.Add(new models.DownloadImageModel(id, name, gameTitle, fullname, url, MultiImage, useDirectory));
+                    _vieModel.DownloadList.Add(new models.DownloadImageModel(id, name, gameTitle, fullname, url, MultiImage, useDirectory, overview, releaseDate, players, publisher, rating));
                     return;
                 }
                 var nm = useDirectory ? name : System.IO.Path.GetFileNameWithoutExtension(name);
                 if (_vieModel.DownloadList.Any(g => g.GameTitle == gameTitle && g.Name == nm)) return;
-                _vieModel.DownloadList.Add(new models.DownloadImageModel(id, nm, gameTitle, fullname, url, MultiImage, useDirectory));
+                _vieModel.DownloadList.Add(new models.DownloadImageModel(id, nm, gameTitle, fullname, url, MultiImage, useDirectory, overview, releaseDate, players, publisher, rating));
             }));
         }
 
@@ -106,7 +99,7 @@ namespace RetroGameHandler.Views
             Dispatcher.BeginInvoke((Action)(() =>
             {
                 if (_vieModel.DownloadList.Any(g => g.GameTitle == gameTitle && g.FullName == fullname)) return;
-                _vieModel.DownloadList.Add(new models.DownloadImageModel(id, System.IO.Path.GetFileNameWithoutExtension(name), gameTitle, fullname));
+                _vieModel.DownloadList.Add(new models.DownloadImageModel(id, System.IO.Path.GetFileNameWithoutExtension(name), gameTitle, fullname, ""));
             }));
         }
 
@@ -121,7 +114,7 @@ namespace RetroGameHandler.Views
                 {
                     spPbScraping.Visibility = Visibility.Visible;
                     pbScraping.IsIndeterminate = true;
-                    status.Text = "Filtering...";
+                    status.Text = "Retrieving images please wait...";
                     this.Cursor = System.Windows.Input.Cursors.Wait;
                     this.IsEnabled = false;
                     spDownloadImageList.Visibility = Visibility.Visible;
@@ -166,7 +159,7 @@ namespace RetroGameHandler.Views
                         data.ScrapGuid = game.UserInfo.NewGuid;
                         Debug.WriteLine($"game.Error.Message");
 
-                        updateDownloadList(0, item.Name, "", item.mFullName, "", false);
+                        updateDownloadList(0, item.Name, "", item.mFullName, "", "", "", 0, "", "");
                     }
                     else return;
                 }
@@ -190,7 +183,7 @@ namespace RetroGameHandler.Views
                         var path = filePath;
                         Debug.WriteLine($"Found:{ item.Name} ({gme.GameTitle}) path: {path}");
                         updateDownloadList(gme.Id, useDirectory ? item.ParentPath.Split('/').Last() : item.Name,
-                            gme.GameTitle, item.mFullName, path, game.Games.Count > 1, useDirectory, removeIfExist);
+                            gme.GameTitle, item.mFullName, path, gme.overview, gme.release_date, int.Parse(gme.players), gme.publisher_to_be_removed, gme.rating, game.Games.Count > 1, useDirectory, removeIfExist);
                     }
                 }
                 catch (Exception ex)
@@ -431,9 +424,31 @@ namespace RetroGameHandler.Views
             var list = _vieModel.DownloadList.Where(l => l.IsSelected);
             var count = 0;
             pbUpload2.Maximum = list.Count();
+            var root = new RetroGameHandler.TimeOnline.root();
+            if (!cbClearGameList.IsChecked.Value && await _vieModel.FtpHelper.FieExist($@"{_vieModel.FtpListItem.FullName }/gamelist.xml"))
+            {
+                using (var ms = new MemoryStream())
+                {
+                    if (_vieModel.FtpHelper.DownloadStream($@"{_vieModel.FtpListItem.FullName }/gamelist.xml", ms))
+                    {
+                        root = RetroGameHandler.TimeOnline.root.LoadGamelist(ms);
+                    }
+                }
+            }
 
             foreach (var item in list.ToList())
             {
+                var game = root.Games.FirstOrDefault(g => g.Path == $"./{Path.GetFileName(item.FullName)}");
+                if (game == null)
+                {
+                    game = new game(item);
+                    root.Games.Add(game);
+                }
+                game.Path = $"./{Path.GetFileName(item.FullName)}";
+                game.ImagePath = $"./{_imageDirectory}/{Path.GetFileNameWithoutExtension(item.FullName)}{Path.GetExtension(item.DownloadPath)}";
+                game.players = item.Players.ToString();
+                game.Publisher = item.Publisher;
+                game.Rating = item.Rating;
                 count++;
                 uploadStatus.Text = $"{count} / {pbUpload2.Maximum}";
                 pbUpload2.Value = count;
@@ -449,7 +464,7 @@ namespace RetroGameHandler.Views
                     using (MemoryStream mem = new MemoryStream(ImageStream))
                     {
                         var name = Path.GetFileNameWithoutExtension(item.FullName) + ".png";
-                        var filePathConsole = $@"{_vieModel.FtpListItem.FullName }/media/{name}";
+                        var filePathConsole = $@"{_vieModel.FtpListItem.FullName }/{_imageDirectory}/{name}";
                         var isok = await _vieModel.FtpHelper.UploadStreamAsync(mem, filePathConsole);
                         if (isok)
                         {
@@ -470,18 +485,17 @@ namespace RetroGameHandler.Views
                     }
                 });
             }
-            //lock (_vieModel.DownloadList)
-            //{
-            //foreach (var ritem in remove)
-            //{
-            //    IReadOnlyList<DownloadImageModel> usersToRemove = _vieModel.DownloadList.Where(x => (x.Name == ritem)).
-            //                             ToList();
-            //    foreach (var itm in usersToRemove)
-            //    {
-            //        _vieModel.DownloadList.Remove(itm);
-            //    }
-            //}
-            //}
+            if (cbCreateGameList.IsChecked.Value)
+            {
+                var xmlStr = root.ToString();
+                byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(xmlStr);
+                using (MemoryStream mem = new MemoryStream(byteArray))
+                {
+                    var filePathConsole = $@"{_vieModel.FtpListItem.FullName }/gamelist.xml";
+                    var isok = await _vieModel.FtpHelper.UploadStreamAsync(mem, filePathConsole);
+                }
+            }
+
             await updateDownloadImageList(true, await UpdateChar());
             spUploadSettings.IsEnabled = true;
             btnScrap.IsEnabled = true;
@@ -645,6 +659,135 @@ namespace RetroGameHandler.Views
             var nm = (DownloadImageModel)dc.Items[0];
             System.Windows.Clipboard.SetText(nm.Name);
             MessageBox.Show("Copy to clipboard ok", "Copy", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private async void btnUploadComputer_Click(object sender, RoutedEventArgs e)
+        {
+            spUploadSettings.IsEnabled = false;
+            btnScrap.IsEnabled = false;
+            DownloadImageList.IsEnabled = false;
+            spprewController.IsEnabled = false;
+            try
+            {
+                var openFileDialog = new System.Windows.Forms.FolderBrowserDialog();
+                openFileDialog.ShowNewFolderButton = true;
+                openFileDialog.SelectedPath = _downloadpath;
+
+                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    _downloadpath = Path.Combine(openFileDialog.SelectedPath, _imageDirectory);
+                    if (!Directory.Exists(_downloadpath)) Directory.CreateDirectory(_downloadpath);
+                    Properties.Settings.Default.ScrapDownloadPath = openFileDialog.SelectedPath;
+                    Properties.Settings.Default.Save();
+                    var c = spUploadSettings.Children.OfType<RadioButton>().FirstOrDefault(r => r.GroupName == "grpSize" && r.IsChecked.Value)?.Tag?.ToString() ?? "orginal";
+
+                    var pathName = c == "custom" ? "orginal" : c;
+                    var path = TheGamesDbHandler.BaseUrls.FirstOrDefault(s => s.Name == pathName)?.Path;
+                    if (path == null) return;
+                    var list = _vieModel.DownloadList.Where(l => l.IsSelected);
+                    var count = 0;
+                    pbUpload.Maximum = list.Count();
+                    pbUpload2.Value = 0;
+
+                    var root = new RetroGameHandler.TimeOnline.root();
+                    var pathGameList = Path.Combine(openFileDialog.SelectedPath, "gamelist.xml");
+                    if (!cbClearGameList.IsChecked.Value && File.Exists(pathGameList))
+                    {
+                        using (var ms = new MemoryStream(File.ReadAllBytes(pathGameList)))
+                        {
+                            root = RetroGameHandler.TimeOnline.root.LoadGamelist(ms);
+                        }
+                    }
+
+                    foreach (var item in list.ToList())
+                    {
+                        var game = root.Games.FirstOrDefault(g => g.Path == $"./{Path.GetFileName(item.FullName)}");
+                        if (game == null)
+                        {
+                            game = new game(item);
+                            root.Games.Add(game);
+                        }
+                        game.Path = $"./{Path.GetFileName(item.FullName)}";
+                        game.ImagePath = $"./{_imageDirectory}/{Path.GetFileNameWithoutExtension(item.FullName)}{Path.GetExtension(item.DownloadPath)}";
+                        game.players = item.Players.ToString();
+                        game.Publisher = item.Publisher;
+                        game.Rating = item.Rating;
+
+                        var gamename = Path.GetFileNameWithoutExtension(item.FullName);
+
+                        var newFilepath = Path.Combine(_downloadpath, gamename);
+                        newFilepath += Path.GetExtension(item.DownloadPath);
+                        await Dispatcher.BeginInvoke((Action)(() =>
+                        {
+                            pbUpload.Value = count;
+                            pbUploadStaus.Text = newFilepath;
+                        }));
+                        count++;
+                        if (File.Exists(newFilepath)) File.Delete(newFilepath);
+                        var Url = path + item.DownloadPath;
+                        byte[] ImageStream;
+                        await Task.Run(() =>
+                       {
+                           using (WebClient client = new WebClient())
+                           {
+                               ImageStream = client.DownloadData(Url);
+                           }
+
+                           using (MemoryStream mem = new MemoryStream(ImageStream))
+                           {
+                               WriteToFile(mem, newFilepath);
+                           }
+                       });
+                    }
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        Arguments = openFileDialog.SelectedPath,
+                        FileName = "explorer.exe"
+                    };
+
+                    root.save(pathGameList);
+                    Process.Start(startInfo);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                pbUpload.Value = 0;
+                pbUploadStaus.Text = "";
+                spUploadSettings.IsEnabled = true;
+                btnScrap.IsEnabled = true;
+                DownloadImageList.IsEnabled = true;
+                spprewController.IsEnabled = true;
+            }
+        }
+
+        public void WriteToFile(Stream input, string fileFullName)
+        {
+            byte[] buffer = new byte[16345];
+            using (FileStream fs = new FileStream(fileFullName,
+                                FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    fs.Write(buffer, 0, read);
+                }
+            }
+        }
+
+        private void cbCreateGameList_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.CreateGameList = cbCreateGameList.IsChecked.Value;
+            Properties.Settings.Default.Save();
+        }
+
+        private void cbClearGameList_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.ClearGameList = cbClearGameList.IsChecked.Value;
+            Properties.Settings.Default.Save();
         }
     }
 }

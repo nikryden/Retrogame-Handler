@@ -15,7 +15,7 @@ namespace RetroGameHandler.models
 {
     public class DownloadImageModel : INotifyPropertyChanged, IConvert
     {
-        public DownloadImageModel(int Id, string Name, string GameTitle, string FullName, string Url, bool MultiImages, bool useDirectory)
+        public DownloadImageModel(int Id, string Name, string GameTitle, string FullName, string Url, bool MultiImages, bool useDirectory, string overview, string releseDate, int players, string publisher, string rating)
         {
             this.Id = Id;
             this.Name = Name;
@@ -23,6 +23,11 @@ namespace RetroGameHandler.models
             this.FullName = FullName;
             this.MultiImages = MultiImages;
             this.IsDirectoryName = useDirectory;
+            this.Overview = overview;
+            this.ReleseDate = releseDate;
+            Players = players;
+            Publisher = publisher;
+            Rating = rating;
             DownloadPath = Url;
             var tmpName = TheGamesDbHandler.CleanGameName(Name, true)
                 .Replace("&amp;", string.Empty)
@@ -84,12 +89,13 @@ namespace RetroGameHandler.models
             //}
         }
 
-        public DownloadImageModel(int Id, string Name, string GameTitle, string FullName)
+        public DownloadImageModel(int Id, string Name, string GameTitle, string FullName, string overview)
         {
             this.Id = Id;
             this.Name = Name;
             this.GameTitle = GameTitle;
             this.FullName = FullName;
+            this.Overview = overview;
             MultiImages = false;
             //byte[] data = client.DownloadData(url);
             using (MemoryStream mem = new MemoryStream())
@@ -112,6 +118,12 @@ namespace RetroGameHandler.models
         public string Name { get; set; }
         public string FullName { get; set; }
         public string GameTitle { get; set; }
+        public string Overview { get; set; }
+        public int Players { get; set; }
+        public string Publisher { get; set; }
+        public string Rating { get; set; }
+
+        public string ReleseDate { get; set; }
         public string DownloadPath { get; set; }
         public bool MultiImages { get; set; }
         public bool HasImage { get; set; }

@@ -151,6 +151,46 @@ namespace RetroGameHandler.ViewModels
             }
         }
 
+        private BindingList<SSHHandler.Diskinfo> _diskinfos = new BindingList<SSHHandler.Diskinfo>();
+
+        public BindingList<SSHHandler.Diskinfo> DiskInfos
+        {
+            get => _diskinfos;
+            set
+            {
+                var isNotEqual = false;
+                if (_diskinfos.Count == 0)
+                {
+                    _diskinfos = value;
+                    NotifyPropertyChanged();
+                }
+                else
+                {
+                    if (_diskinfos.Count == value.Count)
+                    {
+                        for (int i = 0; i < _diskinfos.Count; i++)
+                        {
+                            if (!_diskinfos[i].Equals(value[i]))
+                            {
+                                isNotEqual = true;
+                                break;
+                            }
+                        }
+                    }
+                    else { isNotEqual = true; }
+
+                    if (isNotEqual)
+                    {
+                        _diskinfos = value;
+                        NotifyPropertyChanged();
+                    }
+                }
+
+                //if (_powerConnected && ControllImages.CImages.Images.ContainsKey("BatteryCharging")) BatteryStatusImage = ControllImages.CImages.Images["BatteryCharging"];
+                //if (_powerConnected) BatteryIconHelper.ChangeIcon(5, $"Charging");
+            }
+        }
+
         public string ReleaseInfo
         {
             get => _releaseInfo;
@@ -227,7 +267,7 @@ namespace RetroGameHandler.ViewModels
             else _updatetimer.Stop();
         }
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private new void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -238,6 +278,16 @@ namespace RetroGameHandler.ViewModels
             App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
             {
                 BatteryPower = bt;
+            });
+        }
+
+        private async Task SetDiskInfo()
+        {
+            var bt = await SSHHandler.GetConsoleInfo();
+            App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+            {
+                DiskInfos = new BindingList<SSHHandler.Diskinfo>(bt);
+                //BatteryPower = bt;
             });
         }
 
@@ -270,7 +320,7 @@ namespace RetroGameHandler.ViewModels
                     Working = false;
                     return;
                 }
-                var listTask = new List<Task>() { SetBatteryPower(), SetIsUsbPowerOnline() };
+                var listTask = new List<Task>() { SetBatteryPower(), SetIsUsbPowerOnline(), SetDiskInfo() };
                 if (string.IsNullOrWhiteSpace(ReleaseInfo))
                 {
                     listTask.Add(SetOsReleaseInfo());

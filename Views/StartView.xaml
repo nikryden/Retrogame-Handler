@@ -17,6 +17,7 @@
         <qc:ByteSizeConverter x:Key="ByteSizeConverter" />
         <qc:SetCursor x:Key="SetCursor" />
         <qc:MultiVisibleIfTrueConverter x:Key="MultiVisibleIfTrueConverter" />
+        <qc:DiskInfoProgressColor x:Key="DiskInfoProgressColor" />
         <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
     </UserControl.Resources>
     <Grid>
@@ -27,7 +28,7 @@
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="4*" />
+                <RowDefinition Height="6*" />
                 <RowDefinition Height="2*" />
             </Grid.RowDefinitions>
 
@@ -84,7 +85,7 @@
                         </TextBlock.Visibility>
                     </TextBlock>
                     <StackPanel Orientation="Horizontal"  Visibility="{Binding Working,Converter={StaticResource VisibleIfTrueConverter}}">
-                        <TextBlock Text="Please wait trying to Connect " />
+                        <TextBlock Text="Please wait gathering info" />
                         <TextBlock Text="{Binding Dots}" />
                     </StackPanel>
                 </StackPanel>
@@ -103,11 +104,38 @@
                             <TextBlock Text="Usb power connected:" Margin="0,0,5,0" />
                             <TextBlock Text="{Binding PowerConnected}" Margin="0,0,2,0" />
                         </StackPanel>
-                        <StackPanel Orientation="Vertical" Margin="0,5,5,0">
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock Text="Mount points:" Margin="0,0,5,0" />
+                            <TextBlock Text="([Mount] [Size] [%] [Used] [Available])" FontSize="8" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <Border BorderBrush="DarkGray" BorderThickness="2" CornerRadius="2" Margin="2,0,5,0" Background="Coral">
+
+                            <ListView x:Name="DiskInfo"  Background="LightGray" VerticalAlignment="Stretch" Foreground="Black" ItemsSource="{Binding DiskInfos}" FontSize="8">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                            <ProgressBar Value="{Binding percent, Mode=OneWay}" Foreground="{Binding percent,Converter={StaticResource DiskInfoProgressColor}}"  HorizontalAlignment="Stretch" />
+                                            <StackPanel Orientation="Horizontal" Background="Transparent" HorizontalAlignment="Stretch">
+                                                <fa:ImageAwesome Icon="Usb" Width="8" Height="8" />
+                                                <TextBlock Text="{Binding MoutPoint}" Margin="5,0,1,0" Width="50" Foreground="Black" />
+                                                <TextBlock Text="{Binding SIZE}" Margin="5,0,1,0" TextAlignment="Right" Width="30" Foreground="Black" />
+                                                <TextBlock Text="{Binding USEPERC}" Margin="5,0,1,0"  TextAlignment="Right" Width="30" Foreground="Black" />
+                                                <TextBlock Text="{Binding USED}" Margin="5,0,1,0"  TextAlignment="Right" Width="30" Foreground="Black" />
+
+                                                <TextBlock Text="{Binding AVAIL}" Margin="5,0,5,0"  TextAlignment="Right" Width="30" Foreground="Black" FontWeight="Bold" />
+                                                <!--<TextBlock Text="{Binding FSTYPE}" Margin="5,0,1,0" />
+                                        <TextBlock Text="{Binding LABEL}" Margin="5,0,1,0" />-->
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Border>
+                        <StackPanel Orientation="Vertical" Margin="0,10,5,0">
                             <!--<TextBlock Text="OS Info:" FontWeight="Bold" Margin="0,0,5,0" />-->
                             <Border BorderBrush="DarkGray" BorderThickness="2" CornerRadius="2"  Background="LightGray" Margin="0,0,0,0">
                                 <TextBlock Text="{Binding ReleaseInfo}"
-                                         FontSize="10"
+                                         FontSize="9"
                                          Margin="0,0,0,0"
                                            Foreground="Black"
                                          TextWrapping="Wrap" Padding="2" />
@@ -115,16 +143,16 @@
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
-                <StackPanel Margin="0,10,0,0" Grid.Column="1" Grid.Row="3" x:Name="UploadProgress" Orientation="Vertical" Visibility="Collapsed">
+                <StackPanel Margin="0,10,0,0" Grid.Column="1"  x:Name="UploadProgress" Orientation="Vertical" Visibility="Collapsed">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
-                            <ProgressBar Height="10" Value="{Binding Progress}" Width="130" />
+                            <ProgressBar Height="13" Value="{Binding Progress}" Width="130" />
                             <Button x:Name="CanclUpload"
-                                     Margin="0,1,1,0"
+                                     Margin="0,0,1,0"
                                      Padding="2"
                                      Height="14"
                                      Click="CanclUpload_Click"
@@ -132,21 +160,23 @@
                                 <fa:ImageAwesome Icon="Close" Width="8" Height="8" />
                             </Button>
                         </StackPanel>
-                        <TextBlock Grid.Column="1">
+                        <TextBlock Grid.Column="1" FontSize="10">
                                     <TextBlock Text="{Binding Progress}" Margin="2,0,0,0" />
                                     <TextBlock Text="%" />
                                     <TextBlock Text="{Binding TransferredBytes,Converter={StaticResource ByteSizeConverter}}" Margin="2,0" />
+                                   <!--<TextBlock Text="/" />
+                            <TextBlock Text="{Binding TransferredBytes,Converter={StaticResource ByteSizeConverter}}" Margin="2,0" />-->
                                 </TextBlock>
                     </Grid>
                     <StackPanel Orientation="Horizontal" Margin="0,1">
-                        <TextBlock Text="{Binding FileIndex}" FontSize="8" VerticalAlignment="Bottom" />
+                        <TextBlock Text="{Binding FileIndex}" FontSize="9" VerticalAlignment="Bottom" />
                         <TextBlock Text="/" FontSize="8"  VerticalAlignment="Bottom" />
-                        <TextBlock Text="{Binding FileCount}" FontSize="8" VerticalAlignment="Bottom" />
-                        <TextBlock Text="EAT" Margin="2,0"  FontSize="8" VerticalAlignment="Bottom" />
-                        <TextBlock Text="{Binding EAT}"  FontSize="8" VerticalAlignment="Bottom" />
-                        <TextBlock Text="(hh:mm:ss)" Margin="2,0" FontSize="8" VerticalAlignment="Bottom" />
-                        <TextBlock Text="Speed" Margin="2,0"  FontSize="8" VerticalAlignment="Bottom" />
-                        <TextBlock Text="{Binding TransferSpeedString}"  FontSize="8" VerticalAlignment="Bottom" />
+                        <TextBlock Text="{Binding FileCount}" FontSize="9" VerticalAlignment="Bottom" />
+                        <TextBlock Text="EAT" Margin="2,0"  FontSize="9" VerticalAlignment="Bottom" />
+                        <TextBlock Text="{Binding EAT}"  FontSize="9" VerticalAlignment="Bottom" />
+                        <TextBlock Text="(hh:mm:ss)" Margin="2,0" FontSize="9" VerticalAlignment="Bottom" />
+                        <TextBlock Text="Speed" Margin="2,0"  FontSize="9" VerticalAlignment="Bottom" />
+                        <TextBlock Text="{Binding TransferSpeedString}"  FontSize="9" VerticalAlignment="Bottom" />
                     </StackPanel>
                     <StackPanel>
                         <TextBlock Text="{Binding TransMessage}" FontSize="8" Margin="2,0" Height="40" TextWrapping="Wrap" />
@@ -163,13 +193,12 @@
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
                      Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}" />
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-                     Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+                     Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}" />
                     </Style.Resources>
-                  
                 </Style>
-                </TreeView.ItemContainerStyle>
+            </TreeView.ItemContainerStyle>
 
-                    <TreeView.ItemTemplate>
+            <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type self:FtpListItemModel}" ItemsSource="{Binding Items}">
                     <TextBlock Text="{Binding Name}"  Foreground="White" MouseLeftButtonDown="TreeView_TextBlock_MouseLeftButtonDown" />
                 </HierarchicalDataTemplate>

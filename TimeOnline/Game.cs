@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Xml;
+using System.Xml.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;

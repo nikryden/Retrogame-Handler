@@ -193,7 +193,15 @@ namespace RetroGameHandler.ViewModels
                             path += item.DownloadPath;
                             using (WebClient client = new WebClient())
                             {
-                                item.ImageStream = client.DownloadData(path);
+                                try
+                                {
+                                    item.ImageStream = client.DownloadData(path);
+                                }
+                                catch (Exception ex)
+                                {
+                                    ErrorHandler.Error(ex);
+                                    item.HasImage = false;
+                                }
                             }
                             item.HasImage = true;
                         }
