@@ -130,6 +130,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\RadioButtonExt.cs" />
+    <Compile Include="Converter\DiskInfoProgressColor.cs" />
     <Compile Include="Converter\ObjectConverter.cs" />
     <Compile Include="Entities\DataEntity.cs" />
     <Compile Include="Entities\EmuExtensionsEntity.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Entities\thegamesdbEntities\Include.cs" />
     <Compile Include="Entities\thegamesdbEntities\Pages.cs" />
     <Compile Include="Entities\thegamesdbEntities\PaginatedApiResponse.cs" />
+    <Compile Include="Handlers\Diskinfo.cs" />
     <Compile Include="Handlers\ErrorHandler.cs" />
     <Compile Include="Handlers\JsonHandler.cs" />
     <Compile Include="Handlers\NotifyHandler.cs" />
@@ -167,6 +169,7 @@
     <Compile Include="models\RGHSettingsModel.cs" />
     <Compile Include="Entities\thegamesdbEntities\BaseApiResponse.cs" />
     <Compile Include="TimeOnline\Game.cs" />
+    <Compile Include="TimeOnline\GameEmuView.cs" />
     <Compile Include="UserControllImages\Battery0.xaml.cs">
       <DependentUpon>Battery0.xaml</DependentUpon>
     </Compile>

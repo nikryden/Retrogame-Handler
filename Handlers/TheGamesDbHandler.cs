@@ -252,7 +252,7 @@ namespace RetroGameHandler.Handlers
                 //BaseUrls = burl.BaseUrls;
 
                 var tmp = await LiteDBHelper.LoadAsync<PlatformResponse>();
-                //platforms = tmp.FirstOrDefault()?.data.Platforms.Select(p => p.Value) ?? null;
+                platforms = tmp.FirstOrDefault()?.data.Platforms.Select(p => p) ?? null;
                 platforms = null;
                 Dictionary<int, List<string>> extensions;
                 extensions = await Task.Run(() => JsonHandler.DownloadSerializedJsonData<EmuExtensionsEntity>("http://timeonline.se/RGHandler/EmulatorSupportList.json").Extensions.ToDictionary(em => em.id, em => em.extensoins));
@@ -276,6 +276,7 @@ namespace RetroGameHandler.Handlers
                                 pl.Extensions = extensions.ContainsKey(pl.Id) && !extensions[pl.Id].Any(s => s == "?") ? extensions[pl.Id] : new List<string>();
                                 var icon = pl.Icon;
                                 var url = PlatformImagePath + icon;
+                                if (LiteDBHelper.FileExists("platform/images", icon)) continue;
                                 using (WebClient client = new WebClient())
                                 {
                                     byte[] data = client.DownloadData(url);

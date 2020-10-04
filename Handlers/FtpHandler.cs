@@ -310,7 +310,7 @@ namespace RetroGameHandler.Handlers
             {
                 ErrorHandler.Error(ex);
                 Console.WriteLine(ex);
-                throw;
+                //throw;
             }
         }
 

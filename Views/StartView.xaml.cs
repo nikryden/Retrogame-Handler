@@ -412,7 +412,7 @@ namespace RetroGameHandler.Views
                         }
                         else
                         {
-                            ftpHelper.TransMessage = $"Upload from {p.LocalPath} to {p.RemotePath}";
+                            ftpHelper.TransMessage = $"Upload from {p.RemotePath} to {p.LocalPath}";
                             ftpHelper.Progress = Math.Round(p.Progress, 1);
                             ftpHelper.FileCount = p.FileCount;
                             ftpHelper.FileIndex = p.FileIndex + 1;
