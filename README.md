@@ -17,7 +17,14 @@ If you have some free time and like to help with coding or testing or have suges
 4. Easy update of the program (planded for 1.0.3).
 5. Autosync folders. Add or remove games in folder on PC and when connect to console update folder on console (planded for 1.0.3).
 
+
+
 **If you have any features you like to se in the program please add a issue.**
+
+### [v1.0.3 Production](https://github.com/nikryden/Retrogame-Handler/releases/tag/v1.0.3)
+1. Fix Regular expression in RestSharp vulnerable
+2. Fix Crash when platform is missing icon reference
+
 ### [v1.0.2 Production](https://github.com/nikryden/Retrogame-Handler/releases/tag/v1.0.2)
 
 1. Some bugs fixes.
