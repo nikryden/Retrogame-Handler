@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace RetroGameHandler.Handlers
 {
@@ -23,17 +24,17 @@ namespace RetroGameHandler.Handlers
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public Games GetGameByName(string name)
+        public async Task<Games> GetGameByName(string name)
         {
             try
             {
                 var client = new RestClient("https://api.thegamesdb.net/v1.1/Games/ByGameName");
-                RestRequest request = new RestRequest(Method.GET);
+                RestRequest request = new RestRequest("",Method.Get);
                 request.AddParameter("apikey", APIKey);
                 request.AddParameter("name", name);
                 request.AddParameter("include", "boxart,platform");
                 request.AddHeader("Content-Type", "application/json");
-                var response = client.Execute(request);
+                var response = await client.ExecuteAsync(request);
                 return JsonConvert.DeserializeObject<Games>(response.Content);
             }
             catch (Exception ex)
@@ -43,17 +44,17 @@ namespace RetroGameHandler.Handlers
             }
         }
 
-        public Images GetGameImage(long id)
+        public async Task<Images> GetGameImage(long id)
         {
             try
             {
                 var client = new RestClient("https://api.thegamesdb.net/v1/Games/Images");
-                RestRequest request = new RestRequest(Method.GET);
+                RestRequest request = new RestRequest("",Method.Get);
                 request.AddParameter("apikey", APIKey);
                 request.AddParameter("games_id", id);
 
                 request.AddHeader("Content-Type", "application/json");
-                var response = client.Execute(request);
+                var response = await client.ExecuteAsync(request);
                 return JsonConvert.DeserializeObject<Images>(response.Content);
             }
             catch (Exception ex)
@@ -63,10 +64,10 @@ namespace RetroGameHandler.Handlers
             }
         }
 
-        public void GetConsoleList()
+        public async Task GetConsoleList()
         {
             var client = new RestClient("https://api.thegamesdb.net/v1/Platforms");
-            RestRequest request = new RestRequest(Method.GET);
+            RestRequest request = new RestRequest("", Method.Get);
             //https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=1243e5c43c3c9070009e8ad7a2adebcf0bce6ef344de55ba307bd31271c7f628&name=3%20Ninjas%20Kick%20Back
             //https://api.thegamesdb.net/v1/Platforms?apikey=1243e5c43c3c9070009e8ad7a2adebcf0bce6ef344de55ba307bd31271c7f628
             //https://api.thegamesdb.net/v1/Games/Images?apikey=1243e5c43c3c9070009e8ad7a2adebcf0bce6ef344de55ba307bd31271c7f628&games_id=495
@@ -87,7 +88,7 @@ namespace RetroGameHandler.Handlers
                 }
             };
 
-            var response = client.Execute(request);
+            var response = await client.ExecuteAsync(request);
             rootObj obj = JsonConvert.DeserializeObject<rootObj>(response.Content);
             //To make the call async
             //var cancellationTokenSource = new CancellationTokenSource();
