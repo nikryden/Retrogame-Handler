@@ -270,11 +270,12 @@ namespace RetroGameHandler.Handlers
                         await Task.Run(() =>
                         {
                             platforms = p.data?.Platforms;/*?.Select(i => i.Value);*/
-
+                           if(platforms is null) return;
                             foreach (var pl in platforms)
                             {
                                 pl.Extensions = extensions.ContainsKey(pl.Id) && !extensions[pl.Id].Any(s => s == "?") ? extensions[pl.Id] : new List<string>();
                                 var icon = pl.Icon;
+                                if (icon == "") continue;
                                 var url = PlatformImagePath + icon;
                                 if (LiteDBHelper.FileExists("platform/images", icon)) continue;
                                 using (WebClient client = new WebClient())
@@ -294,8 +295,8 @@ namespace RetroGameHandler.Handlers
                 {
                     foreach (var pl in platforms) pl.Extensions = extensions.ContainsKey(pl.Id) && !extensions[pl.Id].Any(s => s == "?") ? extensions[pl.Id] : new List<string>();
                 }
-
-                foreach (var pl in platforms)
+                if(platforms is null) return;
+                foreach (var pl in platforms.Where(p=> p.Icon!=""))
                 {
                     using (MemoryStream mem = new MemoryStream())
                     {

@@ -32,7 +32,7 @@ namespace RetroGameHandler.Views
             //Console.WriteLine(lst2.Count());
 
             var rs = new RestHandler();
-            var games = rs.GetGameByName("Alundra 2");
+            var games = await rs.GetGameByName("Alundra 2");
             foreach (var game in games.Data.Games)
             {
                 if (game.GameTitle == "Alundra")
